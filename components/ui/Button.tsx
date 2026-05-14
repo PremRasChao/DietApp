@@ -1,4 +1,10 @@
-import { Pressable, Text, ActivityIndicator, View } from "react-native";
+import { Pressable, Text, ActivityIndicator } from "react-native";
+import Animated, {
+  useSharedValue,
+  withSpring,
+  useAnimatedStyle,
+  useReducedMotion,
+} from "react-native-reanimated";
 import { colors } from "@/lib/tokens";
 
 type Variant = "primary" | "secondary" | "ghost" | "dark";
@@ -17,28 +23,30 @@ interface ButtonProps {
 
 const variantClasses: Record<Variant, { container: string; text: string }> = {
   primary: {
-    container: "bg-tan active:opacity-80",
-    text: "text-espresso font-semibold",
+    container: "bg-tan",
+    text: "font-body-semi text-espresso",
   },
   secondary: {
-    container: "border border-tan bg-transparent active:opacity-80",
-    text: "text-tan font-semibold",
+    container: "border border-tan bg-transparent",
+    text: "font-body-semi text-tan",
   },
   ghost: {
-    container: "bg-transparent active:opacity-60",
-    text: "text-espresso font-semibold",
+    container: "bg-transparent",
+    text: "font-body-semi text-espresso",
   },
   dark: {
-    container: "bg-espresso active:opacity-80",
-    text: "text-bone font-semibold",
+    container: "bg-espresso",
+    text: "font-body-semi text-bone",
   },
 };
 
 const sizeClasses: Record<Size, { container: string; text: string }> = {
-  sm: { container: "px-4 py-2 rounded-lg", text: "text-sm" },
-  md: { container: "px-6 py-3 rounded-xl", text: "text-base" },
-  lg: { container: "px-8 py-4 rounded-2xl", text: "text-lg" },
+  sm: { container: "px-4 py-2.5 rounded-xl",   text: "text-sm" },
+  md: { container: "px-6 py-3.5 rounded-2xl",   text: "text-base" },
+  lg: { container: "px-8 py-4 rounded-2xl",     text: "text-lg" },
 };
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function Button({
   label,
@@ -50,14 +58,26 @@ export function Button({
   fullWidth = false,
   className = "",
 }: ButtonProps) {
+  const scale = useSharedValue(1);
+  const reducedMotion = useReducedMotion();
+
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: reducedMotion ? 1 : scale.value }],
+  }));
+
+  const isDisabled = disabled || loading;
   const v = variantClasses[variant];
   const s = sizeClasses[size];
-  const isDisabled = disabled || loading;
 
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={onPress}
+      onPressIn={() => { scale.value = withSpring(0.96, { damping: 15, stiffness: 220 }); }}
+      onPressOut={() => { scale.value = withSpring(1.0, { damping: 15, stiffness: 220 }); }}
       disabled={isDisabled}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
+      style={[animStyle, { minHeight: size === "sm" ? 44 : 48 }]}
       className={`
         flex-row items-center justify-center
         ${v.container} ${s.container}
@@ -74,6 +94,6 @@ export function Button({
         />
       )}
       <Text className={`${v.text} ${s.text}`}>{label}</Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 }

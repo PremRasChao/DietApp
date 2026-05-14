@@ -2,7 +2,7 @@ import { Text } from "react-native";
 import type { ReactNode } from "react";
 
 type Variant = "display" | "heading" | "subheading" | "body" | "caption" | "label";
-type Color = "espresso" | "tan" | "cream" | "taupe" | "bone" | "inherit";
+type Color = "espresso" | "tan" | "cream" | "taupe" | "bone" | "blush" | "sage" | "inherit";
 
 interface ThemedTextProps {
   children: ReactNode;
@@ -13,21 +13,23 @@ interface ThemedTextProps {
 }
 
 const variantClasses: Record<Variant, string> = {
-  display: "font-display text-4xl font-bold leading-tight",
-  heading: "font-display text-2xl font-bold leading-snug",
-  subheading: "font-body text-xl font-semibold",
-  body: "font-body text-base leading-relaxed",
-  caption: "font-body text-sm text-taupe",
-  label: "font-body text-xs font-semibold uppercase tracking-widest",
+  display:    "font-display text-4xl leading-tight",
+  heading:    "font-display text-2xl leading-snug",
+  subheading: "font-display text-xl leading-snug",   // Fraunces for all card headers
+  body:       "font-body text-base leading-relaxed",
+  caption:    "font-body text-sm leading-normal",
+  label:      "font-body-semi text-xs uppercase tracking-widest",
 };
 
 const colorClasses: Record<Color, string> = {
   espresso: "text-espresso",
-  tan: "text-tan",
-  cream: "text-cream",
-  taupe: "text-taupe",
-  bone: "text-bone",
-  inherit: "",
+  tan:      "text-tan",
+  cream:    "text-cream",
+  taupe:    "text-taupe",
+  bone:     "text-bone",
+  blush:    "text-blush",
+  sage:     "text-sage",
+  inherit:  "",
 };
 
 export function ThemedText({

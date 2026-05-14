@@ -5,15 +5,22 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        espresso: "#2C1F14",
-        tan: "#C8A882",
-        cream: "#E8DDD0",
-        taupe: "#9A8270",
-        bone: "#FAF8F5",
+        espresso:  "#2C1F14",
+        tan:       "#C4A07A",
+        blush:     "#E2C3B8",
+        sage:      "#8AAE85",
+        cream:     "#EDE5D8",
+        taupe:     "#7A6557",
+        bone:      "#FDFAF6",
       },
       fontFamily: {
-        body: ["Inter"],
-        display: ["Fraunces"],
+        // Explicit variant names — required for React Native font loading
+        body:           ["Inter_400Regular"],
+        "body-medium":  ["Inter_500Medium"],
+        "body-semi":    ["Inter_600SemiBold"],
+        "body-bold":    ["Inter_700Bold"],
+        display:        ["Fraunces_700Bold"],
+        "display-light":["Fraunces_300Light"],
       },
     },
   },

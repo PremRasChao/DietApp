@@ -11,6 +11,9 @@ export const mockMeals = [
     label: "Breakfast",
     name: "Greek Yogurt Parfait",
     kcal: 320,
+    protein: 24,
+    carbs: 44,
+    fat: 7,
     checked: true,
     thumbnail: null as null | string,
   },
@@ -19,6 +22,9 @@ export const mockMeals = [
     label: "Lunch",
     name: "Grilled Chicken & Quinoa",
     kcal: 520,
+    protein: 46,
+    carbs: 55,
+    fat: 11,
     checked: false,
     thumbnail: null as null | string,
   },
@@ -27,6 +33,9 @@ export const mockMeals = [
     label: "Snack",
     name: "Apple & Almond Butter",
     kcal: 180,
+    protein: 5,
+    carbs: 21,
+    fat: 8,
     checked: false,
     thumbnail: null as null | string,
   },
@@ -35,6 +44,9 @@ export const mockMeals = [
     label: "Dinner",
     name: "Salmon with Roasted Veg",
     kcal: 620,
+    protein: 48,
+    carbs: 42,
+    fat: 22,
     checked: false,
     thumbnail: null as null | string,
   },
@@ -170,7 +182,7 @@ export const mockInsuranceProviders = [
 
 export const mockAppointment = {
   dietitianName: "[Dietitian name]",
-  dietitianPhoto: null as null | string,
+  dietitianPhoto: "https://randomuser.me/api/portraits/women/44.jpg" as null | string,
   date: "Thursday, May 15, 2026",
   time: "2:30 PM",
   type: "Video call",
@@ -188,7 +200,7 @@ export const mockRecipe = {
   kcal: 410,
   prepTime: "25 min",
   tags: ["Vegan", "High Protein", "Gluten-Free"],
-  thumbnail: null as null | string,
+  thumbnail: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80" as null | string,
 };
 
 export const mockWeeklyProgress = [
@@ -202,3 +214,5 @@ export const mockWeeklyProgress = [
 ];
 
 export const CALORIE_GOAL = 2000;
+
+export const MACRO_GOALS = { protein: 135, carbs: 225, fat: 40 } as const;

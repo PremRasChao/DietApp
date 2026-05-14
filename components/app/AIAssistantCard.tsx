@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, TextInput } from "react-native";
+import { Sparkles } from "lucide-react-native";
 import { Card } from "@/components/ui/Card";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { Button } from "@/components/ui/Button";
@@ -25,17 +26,32 @@ export function AIAssistantCard() {
 
   return (
     <Card variant="dark" className="p-5">
-      <ThemedText variant="subheading" color="bone">AI Nutrition Assistant</ThemedText>
-      <ThemedText variant="caption" color="taupe" className="mt-1 mb-4">
+      {/* Header */}
+      <View className="flex-row items-center gap-2 mb-1">
+        <Sparkles size={18} color={colors.sage} strokeWidth={1.75} />
+        <ThemedText variant="subheading" color="bone">AI Nutrition Assistant</ThemedText>
+      </View>
+      <ThemedText variant="caption" color="taupe" className="mb-4">
         How can I help with your meals today?
       </ThemedText>
 
+      {/* Response bubble */}
       {replied && (
-        <View className="bg-espresso border border-taupe rounded-xl p-3 mb-4">
+        <View
+          style={{
+            borderLeftWidth: 3,
+            borderLeftColor: colors.sage,
+            backgroundColor: "rgba(255,255,255,0.06)",
+            borderRadius: 12,
+            padding: 12,
+            marginBottom: 16,
+          }}
+        >
           <ThemedText variant="body" color="bone">{TIPS[tip]}</ThemedText>
         </View>
       )}
 
+      {/* Input row */}
       <View className="flex-row gap-2 items-center">
         <TextInput
           value={input}
@@ -47,9 +63,9 @@ export function AIAssistantCard() {
           style={{
             flex: 1,
             backgroundColor: "rgba(255,255,255,0.08)",
-            borderRadius: 12,
+            borderRadius: 14,
             paddingHorizontal: 14,
-            paddingVertical: 10,
+            paddingVertical: 11,
             color: colors.bone,
             fontFamily: "Inter_400Regular",
             fontSize: 14,
