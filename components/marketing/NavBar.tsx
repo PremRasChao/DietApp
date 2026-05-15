@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView, Platform } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { Button } from "@/components/ui/Button";
 
@@ -9,34 +9,65 @@ export function NavBar() {
 
   return (
     <View className="bg-bone border-b border-cream z-50">
-      <View className="flex-row items-center justify-between px-6 py-4 max-w-screen-xl mx-auto w-full">
-        {/* Logo */}
-        <View>
-          <Text className="text-espresso text-xl font-bold" style={{ fontFamily: "Fraunces_700Bold" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 24,
+          paddingVertical: 16,
+          maxWidth: 1280,
+          alignSelf: "center",
+          width: "100%",
+        }}
+      >
+        {/* Logo — flex:1 pushes nav links to true center */}
+        <View style={{ flex: 1 }}>
+          <Text
+            style={{ fontFamily: "Fraunces_700Bold", fontSize: 20, color: "#2C1F14" }}
+          >
             Nutrition Wize
           </Text>
         </View>
 
-        {/* Desktop nav links */}
+        {/* Desktop nav links — centered */}
         {isMd && (
-          <View className="flex-row items-center gap-6">
+          <View
+            style={{
+              flex: 2,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 32,
+            }}
+          >
             {NAV_LINKS.map((link) => (
-              <Pressable key={link} className="active:opacity-60">
-                <Text className="text-espresso text-sm font-medium">{link}</Text>
+              <Pressable key={link} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                <Text
+                  style={{
+                    fontFamily: "Inter_500Medium",
+                    fontSize: 14,
+                    color: "#2C1F14",
+                  }}
+                >
+                  {link}
+                </Text>
               </Pressable>
             ))}
           </View>
         )}
 
-        {/* CTAs */}
-        <View className="flex-row items-center gap-3">
-          {isMd && (
-            <Button label="Check Insurance" variant="ghost" size="sm" />
-          )}
-          <Button label="Book Appointment" variant="primary" size="sm" />
-          {isMd && (
-            <Button label="Download App" variant="secondary" size="sm" />
-          )}
+        {/* CTAs — right-aligned */}
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          {isMd && <Button label="Check Insurance" variant="ghost" size="sm" />}
+          <Button label="Book" variant="primary" size="sm" />
         </View>
       </View>
     </View>

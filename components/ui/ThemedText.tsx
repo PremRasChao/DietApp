@@ -12,22 +12,23 @@ interface ThemedTextProps {
   numberOfLines?: number;
 }
 
+// font-body / font-display etc. map to exact loaded font names via tailwind.config.js
 const variantClasses: Record<Variant, string> = {
-  display: "font-display text-4xl font-bold leading-tight",
-  heading: "font-display text-2xl font-bold leading-snug",
-  subheading: "font-body text-xl font-semibold",
-  body: "font-body text-base leading-relaxed",
-  caption: "font-body text-sm text-taupe",
-  label: "font-body text-xs font-semibold uppercase tracking-widest",
+  display:    "font-display text-4xl leading-tight",
+  heading:    "font-display text-2xl leading-snug",
+  subheading: "font-body-semibold text-xl leading-snug",
+  body:       "font-body text-base leading-relaxed",
+  caption:    "font-body text-sm",
+  label:      "font-body-semibold text-xs uppercase tracking-widest",
 };
 
 const colorClasses: Record<Color, string> = {
   espresso: "text-espresso",
-  tan: "text-tan",
-  cream: "text-cream",
-  taupe: "text-taupe",
-  bone: "text-bone",
-  inherit: "",
+  tan:      "text-tan",
+  cream:    "text-cream",
+  taupe:    "text-taupe",
+  bone:     "text-bone",
+  inherit:  "",
 };
 
 export function ThemedText({

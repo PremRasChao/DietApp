@@ -1,7 +1,6 @@
-import { View } from "react-native";
-import { Card } from "@/components/ui/Card";
-import { ThemedText } from "@/components/ui/ThemedText";
+import { View, Text, Pressable } from "react-native";
 import { Button } from "@/components/ui/Button";
+import { colors } from "@/lib/tokens";
 
 type Recipe = {
   title: string;
@@ -19,32 +18,152 @@ interface RecipeCardProps {
 
 export function RecipeCard({ recipe, onPress }: RecipeCardProps) {
   return (
-    <Card variant="default" className="overflow-hidden p-0">
-      {/* Thumbnail */}
-      <View className="w-full h-40 bg-cream items-center justify-center">
-        <ThemedText variant="caption" color="taupe">Recipe image</ThemedText>
+    <View
+      style={{
+        backgroundColor: colors.bone,
+        borderRadius: 24,
+        borderWidth: 1,
+        borderColor: colors.cream,
+        overflow: "hidden",
+      }}
+    >
+      {/* Thumbnail placeholder with editorial text */}
+      <View
+        style={{
+          width: "100%",
+          height: 160,
+          backgroundColor: colors.cream,
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        <Text style={{ fontSize: 48 }}>🥗</Text>
+        {/* Eyebrow label overlaid */}
+        <View
+          style={{
+            position: "absolute",
+            top: 14,
+            left: 14,
+            backgroundColor: colors.cream,
+            paddingHorizontal: 12,
+            paddingVertical: 5,
+            borderRadius: 20,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "Inter_500Medium",
+              fontSize: 10,
+              color: colors.espresso,
+              letterSpacing: 1,
+              textTransform: "uppercase",
+            }}
+          >
+            Recipe of the day
+          </Text>
+        </View>
       </View>
-      <View className="p-4">
-        <ThemedText variant="label" color="taupe" className="mb-1">Recipe of the day</ThemedText>
-        <ThemedText variant="subheading" color="espresso">{recipe.title}</ThemedText>
-        <ThemedText variant="body" color="taupe" className="mt-1 mb-3">{recipe.description}</ThemedText>
 
-        <View className="flex-row gap-2 flex-wrap mb-4">
+      <View style={{ padding: 20 }}>
+        <Text
+          style={{
+            fontFamily: "Fraunces_700Bold",
+            fontSize: 20,
+            color: colors.espresso,
+            marginBottom: 6,
+          }}
+        >
+          {recipe.title}
+        </Text>
+        <Text
+          style={{
+            fontFamily: "Inter_400Regular",
+            fontSize: 14,
+            color: colors.taupe,
+            lineHeight: 22,
+            marginBottom: 16,
+          }}
+        >
+          {recipe.description}
+        </Text>
+
+        {/* Tags */}
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 8,
+            flexWrap: "wrap",
+            marginBottom: 18,
+          }}
+        >
           {recipe.tags.map((tag) => (
-            <View key={tag} className="px-2 py-1 bg-tan rounded-full">
-              <ThemedText variant="label" color="espresso">{tag}</ThemedText>
+            <View
+              key={tag}
+              style={{
+                paddingHorizontal: 12,
+                paddingVertical: 5,
+                backgroundColor: "rgba(200,168,130,0.2)",
+                borderRadius: 20,
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Inter_500Medium",
+                  fontSize: 12,
+                  color: colors.espresso,
+                }}
+              >
+                {tag}
+              </Text>
             </View>
           ))}
-          <View className="px-2 py-1 bg-cream rounded-full">
-            <ThemedText variant="label" color="taupe">{recipe.kcal} kcal</ThemedText>
+          <View
+            style={{
+              paddingHorizontal: 12,
+              paddingVertical: 5,
+              backgroundColor: colors.cream,
+              borderRadius: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Inter_400Regular",
+                fontSize: 12,
+                color: colors.taupe,
+              }}
+            >
+              {recipe.kcal} kcal
+            </Text>
           </View>
-          <View className="px-2 py-1 bg-cream rounded-full">
-            <ThemedText variant="label" color="taupe">⏱ {recipe.prepTime}</ThemedText>
+          <View
+            style={{
+              paddingHorizontal: 12,
+              paddingVertical: 5,
+              backgroundColor: colors.cream,
+              borderRadius: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Inter_400Regular",
+                fontSize: 12,
+                color: colors.taupe,
+              }}
+            >
+              ⏱ {recipe.prepTime}
+            </Text>
           </View>
         </View>
 
-        <Button label="Add to plan" variant="primary" size="sm" fullWidth onPress={onPress} />
+        <Button
+          label="Add to plan"
+          variant="primary"
+          size="sm"
+          fullWidth
+          onPress={onPress}
+        />
       </View>
-    </Card>
+    </View>
   );
 }

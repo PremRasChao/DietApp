@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { View, TextInput } from "react-native";
-import { Card } from "@/components/ui/Card";
-import { ThemedText } from "@/components/ui/ThemedText";
-import { Button } from "@/components/ui/Button";
+import { View, Text, TextInput, Pressable } from "react-native";
 import { colors } from "@/lib/tokens";
 
 const TIPS = [
@@ -24,19 +21,81 @@ export function AIAssistantCard() {
   }
 
   return (
-    <Card variant="dark" className="p-5">
-      <ThemedText variant="subheading" color="bone">AI Nutrition Assistant</ThemedText>
-      <ThemedText variant="caption" color="taupe" className="mt-1 mb-4">
-        How can I help with your meals today?
-      </ThemedText>
+    <View
+      style={{
+        backgroundColor: colors.cream,
+        borderRadius: 24,
+        padding: 24,
+      }}
+    >
+      {/* Header */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 12,
+          marginBottom: 6,
+        }}
+      >
+        <View
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 17,
+            backgroundColor: colors.tan,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text style={{ fontSize: 17 }}>✨</Text>
+        </View>
+        <Text
+          style={{
+            fontFamily: "Fraunces_700Bold",
+            fontSize: 18,
+            color: colors.espresso,
+          }}
+        >
+          AI Nutrition Assistant
+        </Text>
+      </View>
+
+      <Text
+        style={{
+          fontFamily: "Inter_400Regular",
+          fontSize: 13,
+          color: colors.taupe,
+          marginBottom: 20,
+        }}
+      >
+        Ask me anything about your meals today
+      </Text>
 
       {replied && (
-        <View className="bg-espresso border border-taupe rounded-xl p-3 mb-4">
-          <ThemedText variant="body" color="bone">{TIPS[tip]}</ThemedText>
+        <View
+          style={{
+            backgroundColor: colors.bone,
+            borderRadius: 16,
+            padding: 14,
+            marginBottom: 16,
+            borderLeftWidth: 3,
+            borderLeftColor: colors.tan,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "Inter_400Regular",
+              fontSize: 14,
+              color: colors.espresso,
+              lineHeight: 22,
+            }}
+          >
+            {TIPS[tip]}
+          </Text>
         </View>
       )}
 
-      <View className="flex-row gap-2 items-center">
+      <View style={{ flexDirection: "row", gap: 10 }}>
         <TextInput
           value={input}
           onChangeText={setInput}
@@ -46,17 +105,40 @@ export function AIAssistantCard() {
           returnKeyType="send"
           style={{
             flex: 1,
-            backgroundColor: "rgba(255,255,255,0.08)",
-            borderRadius: 12,
-            paddingHorizontal: 14,
-            paddingVertical: 10,
-            color: colors.bone,
+            backgroundColor: colors.bone,
+            borderRadius: 14,
+            paddingHorizontal: 16,
+            paddingVertical: 13,
+            color: colors.espresso,
             fontFamily: "Inter_400Regular",
             fontSize: 14,
+            borderWidth: 1,
+            borderColor: "rgba(44,31,20,0.15)",
           }}
         />
-        <Button label="Send" variant="primary" size="sm" onPress={handleSend} />
+        <Pressable
+          onPress={handleSend}
+          style={({ pressed }) => ({
+            backgroundColor: colors.espresso,
+            borderRadius: 14,
+            paddingHorizontal: 20,
+            paddingVertical: 13,
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: pressed ? 0.8 : 1,
+          })}
+        >
+          <Text
+            style={{
+              fontFamily: "Inter_600SemiBold",
+              fontSize: 14,
+              color: colors.bone,
+            }}
+          >
+            Send
+          </Text>
+        </Pressable>
       </View>
-    </Card>
+    </View>
   );
 }

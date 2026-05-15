@@ -12,8 +12,14 @@ module.exports = {
         bone: "#FAF8F5",
       },
       fontFamily: {
-        body: ["Inter"],
-        display: ["Fraunces"],
+        // Exact font names matching useFonts() registration
+        body: ["Inter_400Regular"],
+        "body-medium": ["Inter_500Medium"],
+        "body-semibold": ["Inter_600SemiBold"],
+        "body-bold": ["Inter_700Bold"],
+        display: ["Fraunces_700Bold"],
+        "display-italic": ["Fraunces_700Bold_Italic"],
+        "display-light": ["Fraunces_300Light"],
       },
     },
   },

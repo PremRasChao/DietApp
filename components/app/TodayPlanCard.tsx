@@ -1,7 +1,5 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import Svg, { Circle } from "react-native-svg";
-import { Card } from "@/components/ui/Card";
-import { ThemedText } from "@/components/ui/ThemedText";
 import { Button } from "@/components/ui/Button";
 import { colors } from "@/lib/tokens";
 
@@ -13,79 +11,249 @@ interface TodayPlanCardProps {
   caloriesConsumed: number;
 }
 
-const RING_SIZE = 96;
-const STROKE = 8;
-const R = (RING_SIZE - STROKE) / 2;
+const RING = 128;
+const STROKE = 11;
+const R = (RING - STROKE) / 2;
 const CIRC = 2 * Math.PI * R;
 
 export function TodayPlanCard({ meals, calorieGoal, caloriesConsumed }: TodayPlanCardProps) {
   const pct = Math.min(caloriesConsumed / calorieGoal, 1);
   const offset = CIRC * (1 - pct);
+  const remaining = calorieGoal - caloriesConsumed;
 
   return (
-    <Card variant="cream" className="p-5">
-      <ThemedText variant="subheading" color="espresso" className="mb-4">Today's Plan</ThemedText>
+    <View
+      style={{
+        backgroundColor: colors.cream,
+        borderRadius: 24,
+        padding: 22,
+      }}
+    >
+      {/* Header */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 22,
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: "Fraunces_700Bold",
+            fontSize: 20,
+            color: colors.espresso,
+          }}
+        >
+          Today's Plan
+        </Text>
+        <Text
+          style={{
+            fontFamily: "Inter_400Regular",
+            fontSize: 12,
+            color: colors.taupe,
+          }}
+        >
+          {new Date().toLocaleDateString("en-CA", {
+            month: "short",
+            day: "numeric",
+          })}
+        </Text>
+      </View>
 
-      {/* Progress ring + summary */}
-      <View className="flex-row items-center gap-6 mb-5">
-        <Svg width={RING_SIZE} height={RING_SIZE}>
-          {/* Track */}
-          <Circle
-            cx={RING_SIZE / 2}
-            cy={RING_SIZE / 2}
-            r={R}
-            stroke={colors.cream}
-            strokeWidth={STROKE}
-            fill="none"
+      {/* Ring + stats */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 24,
+          marginBottom: 22,
+        }}
+      >
+        {/* Ring with centered text */}
+        <View style={{ width: RING, height: RING }}>
+          <Svg width={RING} height={RING}>
+            <Circle
+              cx={RING / 2}
+              cy={RING / 2}
+              r={R}
+              stroke="rgba(44,31,20,0.1)"
+              strokeWidth={STROKE}
+              fill="none"
+            />
+            <Circle
+              cx={RING / 2}
+              cy={RING / 2}
+              r={R}
+              stroke={colors.tan}
+              strokeWidth={STROKE}
+              fill="none"
+              strokeDasharray={CIRC}
+              strokeDashoffset={offset}
+              strokeLinecap="round"
+              rotation={-90}
+              originX={RING / 2}
+              originY={RING / 2}
+            />
+          </Svg>
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Fraunces_700Bold",
+                fontSize: 24,
+                color: colors.espresso,
+                lineHeight: 26,
+              }}
+            >
+              {caloriesConsumed}
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Inter_400Regular",
+                fontSize: 10,
+                color: colors.taupe,
+              }}
+            >
+              kcal
+            </Text>
+          </View>
+        </View>
+
+        {/* Stats */}
+        <View style={{ flex: 1, gap: 10 }}>
+          <View>
+            <Text
+              style={{
+                fontFamily: "Fraunces_300Light",
+                fontSize: 32,
+                color: colors.espresso,
+                lineHeight: 34,
+              }}
+            >
+              {remaining}
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Inter_400Regular",
+                fontSize: 12,
+                color: colors.taupe,
+              }}
+            >
+              kcal remaining
+            </Text>
+          </View>
+          <View
+            style={{
+              height: 1,
+              backgroundColor: "rgba(44,31,20,0.1)",
+            }}
           />
-          {/* Progress */}
-          <Circle
-            cx={RING_SIZE / 2}
-            cy={RING_SIZE / 2}
-            r={R}
-            stroke={colors.tan}
-            strokeWidth={STROKE}
-            fill="none"
-            strokeDasharray={CIRC}
-            strokeDashoffset={offset}
-            strokeLinecap="round"
-            rotation="-90"
-            origin={`${RING_SIZE / 2}, ${RING_SIZE / 2}`}
-          />
-        </Svg>
-        <View>
-          <ThemedText variant="heading" color="espresso">{caloriesConsumed}</ThemedText>
-          <ThemedText variant="caption" color="taupe">of {calorieGoal} kcal</ThemedText>
-          <ThemedText variant="caption" color="taupe" className="mt-1">
-            {calorieGoal - caloriesConsumed} remaining
-          </ThemedText>
+          <Text
+            style={{
+              fontFamily: "Inter_400Regular",
+              fontSize: 12,
+              color: colors.taupe,
+            }}
+          >
+            Daily goal: {calorieGoal} kcal
+          </Text>
         </View>
       </View>
 
-      {/* Meal list */}
-      {meals.map((meal, i) => (
-        <View
-          key={meal.id}
-          className={`flex-row items-center gap-3 py-3 ${i < meals.length - 1 ? "border-b border-bone" : ""}`}
-        >
+      {/* Meal rows */}
+      <View
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: "rgba(44,31,20,0.08)",
+        }}
+      >
+        {meals.map((meal, i) => (
           <View
-            className={`w-5 h-5 rounded-full border-2 items-center justify-center ${
-              meal.checked ? "bg-tan border-tan" : "border-taupe"
-            }`}
+            key={meal.id}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 14,
+              paddingVertical: 13,
+              borderBottomWidth: i < meals.length - 1 ? 1 : 0,
+              borderBottomColor: "rgba(44,31,20,0.08)",
+            }}
           >
-            {meal.checked && <ThemedText variant="caption" color="bone">✓</ThemedText>}
-          </View>
-          <View className="flex-1">
-            <ThemedText variant="label" color="espresso">{meal.label}</ThemedText>
-            <ThemedText variant="caption" color="taupe">{meal.name}</ThemedText>
-          </View>
-          <ThemedText variant="caption" color="taupe">{meal.kcal} kcal</ThemedText>
-        </View>
-      ))}
+            <View
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                borderWidth: 2,
+                borderColor: meal.checked ? colors.tan : colors.taupe,
+                backgroundColor: meal.checked ? colors.tan : "transparent",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {meal.checked && (
+                <Text
+                  style={{
+                    fontFamily: "Inter_700Bold",
+                    fontSize: 11,
+                    color: colors.bone,
+                  }}
+                >
+                  ✓
+                </Text>
+              )}
+            </View>
 
-      <View className="mt-4">
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  fontFamily: "Inter_600SemiBold",
+                  fontSize: 10,
+                  color: colors.taupe,
+                  letterSpacing: 1,
+                  textTransform: "uppercase",
+                }}
+              >
+                {meal.label}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "Inter_400Regular",
+                  fontSize: 14,
+                  color: colors.espresso,
+                  marginTop: 1,
+                }}
+              >
+                {meal.name}
+              </Text>
+            </View>
+
+            <Text
+              style={{
+                fontFamily: "Inter_500Medium",
+                fontSize: 13,
+                color: colors.taupe,
+              }}
+            >
+              {meal.kcal}
+            </Text>
+          </View>
+        ))}
+      </View>
+
+      <View style={{ marginTop: 18 }}>
         <Button label="Log a meal" variant="secondary" size="sm" fullWidth />
       </View>
-    </Card>
+    </View>
   );
 }
