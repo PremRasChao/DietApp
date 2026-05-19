@@ -1,4 +1,6 @@
 import { ScrollView, View, Text } from "react-native";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "expo-router";
 import { TopBar } from "@/components/app/TopBar";
 import { StreakCard } from "@/components/app/StreakCard";
 import { TodayPlanCard } from "@/components/app/TodayPlanCard";
@@ -16,6 +18,7 @@ import {
   mockWeeklyProgress,
   CALORIE_GOAL,
 } from "@/lib/mockData";
+import { getTodayLogs } from "@/lib/food/foodLog";
 import { colors } from "@/lib/tokens";
 
 function SectionHeader({ title }: { title: string }) {
@@ -47,9 +50,23 @@ function SectionHeader({ title }: { title: string }) {
 }
 
 export default function AppHome() {
-  const caloriesConsumed = mockMeals
-    .filter((m) => m.checked)
-    .reduce((s, m) => s + m.kcal, 0);
+  const [caloriesConsumed, setCaloriesConsumed] = useState(0);
+  const [loggedMeals, setLoggedMeals] = useState<{ id: string; label: string; name: string; kcal: number; checked: boolean }[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getTodayLogs().then((logs) => {
+        setCaloriesConsumed(logs.reduce((s, e) => s + e.kcal, 0));
+        setLoggedMeals(logs.map((e) => ({
+          id: e.id,
+          label: e.meal_type ?? "meal",
+          name: e.food_name,
+          kcal: e.kcal,
+          checked: true,
+        })));
+      }).catch(() => {});
+    }, [])
+  );
 
   return (
     <ScrollView
@@ -69,7 +86,7 @@ export default function AppHome() {
         {/* Today's Plan */}
         <View style={{ marginTop: 24 }}>
           <TodayPlanCard
-            meals={mockMeals}
+            meals={loggedMeals.length > 0 ? loggedMeals : mockMeals}
             calorieGoal={CALORIE_GOAL}
             caloriesConsumed={caloriesConsumed}
           />

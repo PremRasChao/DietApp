@@ -91,9 +91,7 @@ export function TodayPlanCard({ meals, calorieGoal, caloriesConsumed }: TodayPla
               strokeDasharray={CIRC}
               strokeDashoffset={offset}
               strokeLinecap="round"
-              rotation={-90}
-              originX={RING / 2}
-              originY={RING / 2}
+              transform={`rotate(-90, ${RING / 2}, ${RING / 2})`}
             />
           </Svg>
           <View
