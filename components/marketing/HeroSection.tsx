@@ -1,5 +1,6 @@
 import { View, Text } from "react-native";
 import { Button } from "@/components/ui/Button";
+import { Glow } from "@/components/ui/Glow";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { colors } from "@/lib/tokens";
 
@@ -20,31 +21,9 @@ export function HeroSection() {
         position: "relative",
       }}
     >
-      {/* Decorative background circles (law-of-proximity: frame the content) */}
-      <View
-        style={{
-          position: "absolute",
-          top: -60,
-          right: -60,
-          width: isMd ? 420 : 280,
-          height: isMd ? 420 : 280,
-          borderRadius: isMd ? 210 : 140,
-          backgroundColor: colors.cream,
-          opacity: 0.65,
-        }}
-      />
-      <View
-        style={{
-          position: "absolute",
-          bottom: 20,
-          left: -100,
-          width: isMd ? 320 : 200,
-          height: isMd ? 320 : 200,
-          borderRadius: isMd ? 160 : 100,
-          backgroundColor: colors.cream,
-          opacity: 0.4,
-        }}
-      />
+      {/* Ambient glow — top and bottom anchors */}
+      <Glow variant="top" style={{ opacity: 0.7 }} />
+      <Glow variant="bottom" style={{ opacity: 0.45 }} />
 
       <View
         style={{

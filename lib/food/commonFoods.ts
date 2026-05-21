@@ -76,10 +76,58 @@ export const COMMON_FOODS: FoodResult[] = [
   { id: "l-burger",        name: "Hamburger",            brand: null, kcalPer100g: 295, proteinPer100g: 17,  carbsPer100g: 24,  fatPer100g: 14,  servingG: 110 },
 ];
 
+// Levenshtein edit distance (substitutions, insertions, deletions)
+function levenshtein(a: string, b: string): number {
+  if (Math.abs(a.length - b.length) > 3) return 99;
+  const dp = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    let prev = dp[0];
+    dp[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const tmp = dp[j];
+      dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j], dp[j - 1]);
+      prev = tmp;
+    }
+  }
+  return dp[b.length];
+}
+
 export function searchLocal(query: string): FoodResult[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];
-  return COMMON_FOODS.filter(
-    (f) => f.name.toLowerCase().includes(q)
-  ).slice(0, 10);
+
+  const scored = COMMON_FOODS.map((f) => {
+    const name = f.name.toLowerCase();
+    const words = name.split(/[\s,/]+/).filter(Boolean);
+
+    // 1-2 chars: only word-start match (keeps results tight)
+    if (q.length <= 2) {
+      return { food: f, score: words.some((w) => w.startsWith(q)) ? 80 : 0 };
+    }
+
+    // Exact substring → highest priority
+    if (name.includes(q)) return { food: f, score: 100 };
+
+    // Word starts with query → high priority
+    if (words.some((w) => w.startsWith(q))) return { food: f, score: 80 };
+
+    // Fuzzy: allow 1 edit for 4-5 char queries, 2 edits for 6+ chars
+    if (q.length >= 4) {
+      const maxDist = q.length <= 5 ? 1 : 2;
+      // Check against each word in the food name
+      const wordDist = Math.min(...words.map((w) => levenshtein(q, w)));
+      if (wordDist <= maxDist) return { food: f, score: 60 - wordDist * 10 };
+      // Also compare query against the first q.length chars of each word (prefix fuzzy)
+      const prefDist = Math.min(...words.map((w) => levenshtein(q, w.slice(0, q.length))));
+      if (prefDist <= 1) return { food: f, score: 40 };
+    }
+
+    return { food: f, score: 0 };
+  });
+
+  return scored
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10)
+    .map(({ food }) => food);
 }

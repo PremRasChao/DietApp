@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* Brand glow colours — mapped to app's tan palette */
+    --brand:            33 39% 65%;   /* #C8A882 tan */
+    --brand-foreground: 33 48% 72%;   /* lighter warm tan */
+  }
+}
+
+@layer utilities {
+  .glow-effect {
+    position: relative;
+    overflow: hidden;
+  }
+  .glow-effect::before {
+    content: '';
+    z-index: -1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, hsl(var(--brand) / 0.3), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .glow-effect:hover::before {
+    opacity: 1;
+  }
+}

@@ -1,11 +1,14 @@
-import { ScrollView, Text, Pressable } from "react-native";
+import { ScrollView, Text, Pressable, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/lib/tokens";
 
-const ACTIONS = [
-  { label: "Log food", icon: "🍽", primary: true },
-  { label: "Find a swap", icon: "🔄", primary: false },
-  { label: "Ask AI", icon: "✨", primary: false },
-  { label: "Log weight", icon: "⚖", primary: false },
+type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
+
+const ACTIONS: { label: string; icon: IoniconName; primary: boolean }[] = [
+  { label: "Log food",    icon: "add-circle-outline", primary: true },
+  { label: "Find a swap", icon: "swap-horizontal-outline", primary: false },
+  { label: "Ask AI",      icon: "sparkles-outline" as IoniconName, primary: false },
+  { label: "Log weight",  icon: "scale-outline" as IoniconName,    primary: false },
 ];
 
 export function QuickActionsRow() {
@@ -27,11 +30,20 @@ export function QuickActionsRow() {
             borderRadius: 50,
             backgroundColor: primary ? colors.espresso : colors.cream,
             borderWidth: primary ? 0 : 1,
-            borderColor: "rgba(44,31,20,0.12)",
+            borderColor: "rgba(44,31,20,0.1)",
             opacity: pressed ? 0.75 : 1,
+            shadowColor: colors.espresso,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: primary ? 0.18 : 0.05,
+            shadowRadius: 6,
+            elevation: primary ? 3 : 1,
           })}
         >
-          <Text style={{ fontSize: 17 }}>{icon}</Text>
+          <Ionicons
+            name={icon}
+            size={16}
+            color={primary ? colors.bone : colors.espresso}
+          />
           <Text
             style={{
               fontFamily: "Inter_500Medium",

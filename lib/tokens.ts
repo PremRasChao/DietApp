@@ -1,18 +1,18 @@
 export const colors = {
   espresso: "#2C1F14",
-  tan: "#C8A882",
-  cream: "#E8DDD0",
-  taupe: "#9A8270",
-  bone: "#FAF8F5",
+  tan:      "#C8A882",
+  cream:    "#E8DDD0",
+  taupe:    "#9A8270",
+  bone:     "#F5EDDE", // warm parchment — replaces plain near-white
   // semantic aliases
-  background: "#FAF8F5",
-  surface: "#E8DDD0",
-  primary: "#2C1F14",
-  secondary: "#C8A882",
-  muted: "#9A8270",
-  textPrimary: "#2C1F14",
+  background:    "#F5EDDE",
+  surface:       "#E8DDD0",
+  primary:       "#2C1F14",
+  secondary:     "#C8A882",
+  muted:         "#9A8270",
+  textPrimary:   "#2C1F14",
   textSecondary: "#9A8270",
-  textInverse: "#FAF8F5",
+  textInverse:   "#F5EDDE",
 } as const;
 
 export const fonts = {

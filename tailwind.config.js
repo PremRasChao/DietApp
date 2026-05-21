@@ -6,10 +6,21 @@ module.exports = {
     extend: {
       colors: {
         espresso: "#2C1F14",
-        tan: "#C8A882",
-        cream: "#E8DDD0",
-        taupe: "#9A8270",
-        bone: "#FAF8F5",
+        tan:      "#C8A882",
+        cream:    "#E8DDD0",
+        taupe:    "#9A8270",
+        bone:     "#F5EDDE",
+        brand:             "hsl(var(--brand))",
+        "brand-foreground":"hsl(var(--brand-foreground))",
+      },
+      keyframes: {
+        "appear-zoom": {
+          "0%":   { opacity: "0", transform: "scale(0.95)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+      },
+      animation: {
+        "appear-zoom": "appear-zoom 0.5s ease-out forwards",
       },
       fontFamily: {
         // Exact font names matching useFonts() registration

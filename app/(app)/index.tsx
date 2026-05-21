@@ -1,4 +1,5 @@
 import { ScrollView, View, Text } from "react-native";
+import { Glow } from "@/components/ui/Glow";
 import { useState, useCallback } from "react";
 import { useFocusEffect } from "expo-router";
 import { TopBar } from "@/components/app/TopBar";
@@ -51,12 +52,18 @@ function SectionHeader({ title }: { title: string }) {
 
 export default function AppHome() {
   const [caloriesConsumed, setCaloriesConsumed] = useState(0);
+  const [protein, setProtein] = useState(0);
+  const [carbs, setCarbs] = useState(0);
+  const [fat, setFat] = useState(0);
   const [loggedMeals, setLoggedMeals] = useState<{ id: string; label: string; name: string; kcal: number; checked: boolean }[]>([]);
 
   useFocusEffect(
     useCallback(() => {
       getTodayLogs().then((logs) => {
         setCaloriesConsumed(logs.reduce((s, e) => s + e.kcal, 0));
+        setProtein(Math.round(logs.reduce((s, e) => s + e.protein_g, 0) * 10) / 10);
+        setCarbs(Math.round(logs.reduce((s, e) => s + e.carbs_g, 0) * 10) / 10);
+        setFat(Math.round(logs.reduce((s, e) => s + e.fat_g, 0) * 10) / 10);
         setLoggedMeals(logs.map((e) => ({
           id: e.id,
           label: e.meal_type ?? "meal",
@@ -69,9 +76,13 @@ export default function AppHome() {
   );
 
   return (
+    <View style={{ flex: 1, backgroundColor: colors.bone }}>
+      {/* Ambient glow behind the hero section */}
+      <Glow variant="top" style={{ height: 360, opacity: 0.65 }} />
+
     <ScrollView
-      style={{ flex: 1, backgroundColor: colors.bone }}
-      contentContainerStyle={{ paddingBottom: 48 }}
+      style={{ flex: 1 }}
+      contentContainerStyle={{ paddingBottom: 110 }}
       showsVerticalScrollIndicator={false}
     >
       <TopBar firstName={mockUser.firstName} />
@@ -89,6 +100,9 @@ export default function AppHome() {
             meals={loggedMeals.length > 0 ? loggedMeals : mockMeals}
             calorieGoal={CALORIE_GOAL}
             caloriesConsumed={caloriesConsumed}
+            protein={protein}
+            carbs={carbs}
+            fat={fat}
           />
         </View>
 
@@ -129,5 +143,6 @@ export default function AppHome() {
         </View>
       </View>
     </ScrollView>
+    </View>
   );
 }
