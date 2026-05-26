@@ -7,13 +7,17 @@ import { AIAssistantCard } from "@/components/app/AIAssistantCard";
 import { AppointmentCard } from "@/components/app/AppointmentCard";
 import { ProgressSnapshot } from "@/components/app/ProgressSnapshot";
 import { RecipeCard } from "@/components/app/RecipeCard";
+import { BadgesSection } from "@/components/app/BadgesSection";
+import { WeeklySummaryCard } from "@/components/app/WeeklySummaryCard";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { colors } from "@/lib/tokens";
 import {
   mockUser,
   mockMeals,
   mockAppointment,
-  mockStreak,
+  mockStreaks,
+  mockBadges,
+  mockWeeklySummary,
   mockRecipe,
   mockWeeklyProgress,
   CALORIE_GOAL,
@@ -48,12 +52,12 @@ export default function AppHome() {
     >
       <TopBar
         firstName={mockUser.firstName}
-        streakDays={mockStreak.count}
+        streakDays={mockStreaks.logging.count}
         caloriesRemaining={CALORIE_GOAL - caloriesConsumed}
       />
 
       <View className="px-4 gap-5 mt-5">
-        <StreakCard days={mockStreak.count} nextMilestone={mockStreak.nextMilestone} />
+        <StreakCard logging={mockStreaks.logging} adherence={mockStreaks.adherence} />
 
         <SectionHeader title="Today" action="View plan" />
         <TodayPlanCard
@@ -83,6 +87,20 @@ export default function AppHome() {
 
         <SectionHeader title="Progress" />
         <ProgressSnapshot weeklyData={mockWeeklyProgress} calorieGoal={CALORIE_GOAL} />
+
+        <SectionHeader title="Weekly summary" />
+        <WeeklySummaryCard
+          weekLabel={mockWeeklySummary.weekLabel}
+          daysLogged={mockWeeklySummary.daysLogged}
+          totalDays={mockWeeklySummary.totalDays}
+          calorieGoalDays={mockWeeklySummary.calorieGoalDays}
+          calorieGoalTarget={mockWeeklySummary.calorieGoalTarget}
+          macrosHit={mockWeeklySummary.macrosHit}
+          streakMaintained={mockWeeklySummary.streakMaintained}
+        />
+
+        <SectionHeader title="Badges" />
+        <BadgesSection badges={mockBadges} />
 
         <SectionHeader title="Recipe inspiration" />
         <RecipeCard recipe={mockRecipe} />

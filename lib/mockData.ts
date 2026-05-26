@@ -194,6 +194,51 @@ export const mockStreak = {
   nextMilestone: 14,
 };
 
+export const mockStreaks = {
+  logging:   { count: 12, nextMilestone: 14 },
+  adherence: { count: 3,  nextMilestone: 4  },
+};
+
+export type BadgeIcon =
+  | "star"
+  | "flame"
+  | "target"
+  | "zap"
+  | "arrowLeftRight"
+  | "trophy"
+  | "calendar"
+  | "video";
+
+export type Badge = {
+  id: string;
+  title: string;
+  description: string;
+  icon: BadgeIcon;
+  earned: boolean;
+  earnedDate: string | null;
+};
+
+export const mockBadges: Badge[] = [
+  { id: "first-log",       title: "First Step",    description: "Logged your first meal",           icon: "star",           earned: true,  earnedDate: "May 1, 2026"  },
+  { id: "3-day-streak",    title: "3-Day Streak",  description: "3 days of consistent logging",     icon: "flame",          earned: true,  earnedDate: "May 3, 2026"  },
+  { id: "goal-reached",    title: "Goal Reached",  description: "Hit your calorie goal for the day", icon: "target",         earned: true,  earnedDate: "May 10, 2026" },
+  { id: "7-day-streak",    title: "Week Warrior",  description: "7-day logging streak",             icon: "zap",            earned: true,  earnedDate: "May 8, 2026"  },
+  { id: "first-swap",      title: "Swap Made",     description: "Made your first food swap",        icon: "arrowLeftRight", earned: false, earnedDate: null           },
+  { id: "14-day-streak",   title: "Fortnight",     description: "14-day logging streak",            icon: "trophy",         earned: false, earnedDate: null           },
+  { id: "4-week-logging",  title: "Consistent",    description: "4 weeks of consistent logging",    icon: "calendar",       earned: false, earnedDate: null           },
+  { id: "first-telehealth",title: "First Call",    description: "Completed a telehealth session",   icon: "video",          earned: false, earnedDate: null           },
+];
+
+export const mockWeeklySummary = {
+  weekLabel:        "Week of May 19",
+  daysLogged:       6,
+  totalDays:        7,
+  calorieGoalDays:  5,
+  calorieGoalTarget:7,
+  macrosHit: { protein: true, carbs: true, fat: false },
+  streakMaintained: true,
+};
+
 export const mockRecipe = {
   title: "Chickpea & Spinach Curry",
   description: "A fragrant, plant-based dish inspired by South Asian cuisine.",

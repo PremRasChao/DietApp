@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { Text, type TextStyle } from "react-native";
 import type { ReactNode } from "react";
 
 type Variant = "display" | "heading" | "subheading" | "body" | "caption" | "label";
@@ -10,6 +10,7 @@ interface ThemedTextProps {
   color?: Color;
   className?: string;
   numberOfLines?: number;
+  style?: TextStyle;
 }
 
 const variantClasses: Record<Variant, string> = {
@@ -38,11 +39,13 @@ export function ThemedText({
   color = "inherit",
   className = "",
   numberOfLines,
+  style,
 }: ThemedTextProps) {
   return (
     <Text
       numberOfLines={numberOfLines}
       className={`${variantClasses[variant]} ${colorClasses[color]} ${className}`}
+      style={style}
     >
       {children}
     </Text>
