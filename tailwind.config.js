@@ -5,11 +5,20 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        espresso: "#2C1F14",
-        tan:      "#C8A882",
-        cream:    "#E8DDD0",
-        taupe:    "#9A8270",
-        bone:     "#F5EDDE",
+        // New palette
+        forest:  "#2D4A3E",
+        sage:    "#5A8A78",
+        clay:    "#C44B3A",
+        linen:   "#EAE4D6",
+        ink:     "#1C1917",
+        stone:   "#6B6560",
+        // Backward-compat aliases
+        espresso: "#2D4A3E",
+        tan:      "#5A8A78",
+        cream:    "#FFFFFF",
+        taupe:    "#6B6560",
+        bone:     "#EAE4D6",
+        // Brand CSS-var tokens
         brand:             "hsl(var(--brand))",
         "brand-foreground":"hsl(var(--brand-foreground))",
       },

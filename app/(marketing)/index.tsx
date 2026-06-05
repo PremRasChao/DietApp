@@ -1,6 +1,7 @@
 import { View } from "react-native";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { ServicesGrid } from "@/components/marketing/ServicesGrid";
+import { DashboardPreview } from "@/components/marketing/DashboardPreview";
 import { DietitianCarousel } from "@/components/marketing/DietitianCarousel";
 import { AppFeatureSection } from "@/components/marketing/AppFeatureSection";
 import { InsuranceChecker } from "@/components/marketing/InsuranceChecker";
@@ -13,6 +14,7 @@ export default function MarketingHomepage() {
     <View>
       <HeroSection />
       <ServicesGrid />
+      <DashboardPreview />
       <DietitianCarousel />
       <AppFeatureSection />
       <InsuranceChecker />

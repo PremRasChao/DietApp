@@ -4,9 +4,9 @@
 
 @layer base {
   :root {
-    /* Brand glow colours — mapped to app's tan palette */
-    --brand:            33 39% 65%;   /* #C8A882 tan */
-    --brand-foreground: 33 48% 72%;   /* lighter warm tan */
+    /* Brand colours — forest green palette */
+    --brand:            158 26% 23%;  /* #2D4A3E forest */
+    --brand-foreground: 158 20% 41%;  /* #5A8A78 sage */
   }
 }
 
