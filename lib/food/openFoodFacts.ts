@@ -1,6 +1,5 @@
-// Uses USDA FoodData Central — fast, relevance-sorted, 300k+ foods
-// All nutrient values in the search endpoint are normalized to per 100g by USDA,
-// regardless of food type (Foundation, SR Legacy, Survey, Branded).
+import { canRequest, recordRequest } from "@/lib/rateLimit";
+
 const USDA_KEY = process.env.EXPO_PUBLIC_USDA_KEY ?? "DEMO_KEY";
 
 const cache = new Map<string, FoodResult[]>();
@@ -36,6 +35,8 @@ export async function searchFood(query: string): Promise<FoodResult[]> {
   if (!query.trim()) return [];
   const key = query.trim().toLowerCase();
   if (cache.has(key)) return cache.get(key)!;
+  if (!canRequest("usda")) throw new Error("USDA daily request limit reached (500/day)");
+  recordRequest("usda");
 
   const url =
     `https://api.nal.usda.gov/fdc/v1/foods/search` +

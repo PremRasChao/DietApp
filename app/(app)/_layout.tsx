@@ -8,7 +8,7 @@ export default function AppLayout() {
       screenOptions={{ headerShown: false }}
     >
       <Tabs.Screen name="index"   options={{ title: "Home" }} />
-      <Tabs.Screen name="plan"    options={{ title: "Plan" }} />
+      <Tabs.Screen name="plan"    options={{ title: "Meals" }} />
       <Tabs.Screen name="log"     options={{ title: "Log" }} />
       <Tabs.Screen name="chat"    options={{ title: "Chat" }} />
       <Tabs.Screen name="profile" options={{ title: "Me" }} />
