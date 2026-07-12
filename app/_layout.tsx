@@ -1,6 +1,8 @@
 import "../global.css";
+import { useEffect } from "react";
 import { View } from "react-native";
 import { Stack } from "expo-router";
+import { configureGoogleSignin } from "@/lib/auth/googleSignin";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import {
@@ -25,6 +27,11 @@ export default function RootLayout() {
     Fraunces_700Bold,
     Fraunces_700Bold_Italic,
   });
+
+  // Configure Google Sign-In once at startup (not per button render).
+  useEffect(() => {
+    configureGoogleSignin();
+  }, []);
 
   // Render immediately — fonts enhance but don't block
   return (

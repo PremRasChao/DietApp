@@ -28,9 +28,19 @@ function makeStorage() {
   };
 }
 
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+if (__DEV__ && (!supabaseUrl || !supabaseAnonKey)) {
+  throw new Error(
+    "Missing Supabase env vars. Set EXPO_PUBLIC_SUPABASE_URL and " +
+      "EXPO_PUBLIC_SUPABASE_ANON_KEY in .env (see .env.example)."
+  );
+}
+
 export const supabase = createClient(
-  process.env.EXPO_PUBLIC_SUPABASE_URL ?? "https://placeholder.supabase.co",
-  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? "placeholder",
+  supabaseUrl!,
+  supabaseAnonKey!,
   {
     auth: {
       storage: makeStorage(),
