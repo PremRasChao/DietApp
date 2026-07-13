@@ -1,8 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
 
-// Placeholder until real auth is wired up
-const PLACEHOLDER_USER_ID = "00000000-0000-0000-0000-000000000001";
-
 export type FoodLogEntry = {
   id: string;
   food_name: string;
@@ -18,22 +15,27 @@ export type FoodLogEntry = {
 
 export type LogFoodInput = Omit<FoodLogEntry, "id" | "logged_at">;
 
+async function getUserId(): Promise<string> {
+  const { data } = await supabase.auth.getUser();
+  if (!data.user?.id) throw new Error("Not authenticated");
+  return data.user.id;
+}
+
 export async function logFood(input: LogFoodInput) {
-  const { error } = await supabase.from("food_logs").insert({
-    ...input,
-    user_id: PLACEHOLDER_USER_ID,
-  });
+  const user_id = await getUserId();
+  const { error } = await supabase.from("food_logs").insert({ ...input, user_id });
   if (error) throw error;
 }
 
 export async function getTodayLogs(): Promise<FoodLogEntry[]> {
+  const user_id = await getUserId();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const { data, error } = await supabase
     .from("food_logs")
     .select("*")
-    .eq("user_id", PLACEHOLDER_USER_ID)
+    .eq("user_id", user_id)
     .gte("logged_at", today.toISOString())
     .order("logged_at", { ascending: false });
 

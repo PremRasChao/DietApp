@@ -9,7 +9,8 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.dietapp"
+      "bundleIdentifier": "com.dietapp",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +27,13 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.680408975155-vhgcv3hb1bfn7rmjufhl8vk10k5ivp6p"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
