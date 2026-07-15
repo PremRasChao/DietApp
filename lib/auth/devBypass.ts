@@ -5,7 +5,7 @@ import { Session, User } from "@supabase/supabase-js";
 export const DEV_BYPASS_AUTH = true;
 
 // Flip to "dietitian" to preview the dietitian dashboard without a real sign-in.
-export const DEV_ROLE: "patient" | "dietitian" = "dietitian";
+export const DEV_ROLE: "patient" | "dietitian" = "patient";
 
 export const DEV_USER_ID = "00000000-0000-0000-0000-000000000001";
 
