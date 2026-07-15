@@ -36,7 +36,7 @@
 | Auth — web Google | Supabase OAuth (`signInWithOAuth`) |
 | Auth tokens | `expo-secure-store` (native) / `localStorage` (web, SSR-safe) |
 | Food API 1 | USDA FoodData Central |
-| Food API 2 | Spoonacular (100/day limit) |
+| Food API 2 | Spoonacular (3,000/month limit) |
 | Food API 3 | TheMealDB (free fallback for recipes) |
 
 ---
@@ -196,7 +196,7 @@ app/index.tsx
 EXPO_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 EXPO_PUBLIC_USDA_KEY=your-usda-key
-EXPO_PUBLIC_SPOONACULAR_KEY=490d82dca2dc4b21a50940f1c4d43608
+EXPO_PUBLIC_SPOONACULAR_KEY=your-spoonacular-key   ← 3,000 req/month plan, see local .env
 EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=xxxx.apps.googleusercontent.com   ← STILL NEEDED
 EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=xxxx.apps.googleusercontent.com   ← STILL NEEDED
 ```

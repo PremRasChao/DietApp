@@ -245,6 +245,57 @@ export type MealTemplate = {
   kcal: number; fatPct: number; carbsPct: number; proteinPct: number;
 };
 
+// ── Dietitian dashboard data ───────────────────────────────────────────────────
+
+export const mockDietitian = {
+  firstName: "[Dietitian name]",
+  initials: "SC",
+};
+
+export const mockDietitianStats = {
+  sessionsToday: 5,
+  activeClients: 18,
+  bookedThisWeek: 22,
+  plansDueReview: 3,
+};
+
+export const mockWorkHours = {
+  today: { start: "8:00 AM", end: "5:00 PM" },
+  week: [
+    { day: "Mon", hours: "8a–5p" },
+    { day: "Tue", hours: "8a–5p" },
+    { day: "Wed", hours: "8a–1p" },
+    { day: "Thu", hours: "8a–5p" },
+    { day: "Fri", hours: "8a–5p" },
+    { day: "Sat", hours: "Off" },
+    { day: "Sun", hours: "Off" },
+  ],
+};
+
+export type DietitianAppointment = {
+  id: string; time: string; period: string; clientName: string;
+  type: string; durationMin: number; accent: "protein" | "fat";
+};
+
+export const mockDietitianSchedule: DietitianAppointment[] = [
+  { id: "a1", time: "9:00",  period: "AM", clientName: "Priya Malhotra", type: "Follow-up",       durationMin: 30, accent: "fat" },
+  { id: "a2", time: "10:30", period: "AM", clientName: "James Osei",     type: "Initial consult",  durationMin: 45, accent: "protein" },
+  { id: "a3", time: "1:00",  period: "PM", clientName: "Manpreet Singh", type: "Follow-up",        durationMin: 30, accent: "fat" },
+];
+
+export type DietitianClient = {
+  id: string; name: string; initials: string;
+  planName: string; weekOf: number; weekTotal: number;
+  status: "On track" | "New" | "Review due";
+};
+
+export const mockDietitianClients: DietitianClient[] = [
+  { id: "c1", name: "Priya Malhotra", initials: "PM", planName: "High protein vegan",     weekOf: 4, weekTotal: 8, status: "On track" },
+  { id: "c2", name: "James Osei",     initials: "JO", planName: "No plan yet",            weekOf: 0, weekTotal: 0, status: "New" },
+  { id: "c3", name: "Lena Kowalski",  initials: "LK", planName: "Mediterranean reset",    weekOf: 6, weekTotal: 6, status: "Review due" },
+  { id: "c4", name: "Manpreet Singh", initials: "MS", planName: "Keto weight loss",       weekOf: 2, weekTotal: 10, status: "On track" },
+];
+
 export const mockMealTemplates: MealTemplate[] = [
   { id: "t1", name: "High Protein Vegan",       description: "Plant-based plan optimised for muscle growth and recovery",         tags: ["Vegan", "High Protein"],     kcal: 1900, fatPct: 25, carbsPct: 40, proteinPct: 35 },
   { id: "t2", name: "Keto Weight Loss",          description: "Very low carb plan to shift your body into fat-burning mode",        tags: ["Keto", "Weight Loss"],       kcal: 1600, fatPct: 70, carbsPct: 5,  proteinPct: 25 },

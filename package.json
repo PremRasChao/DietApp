@@ -11,6 +11,7 @@
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
     "@expo-google-fonts/inter": "^0.4.2",
+    "@expo-google-fonts/public-sans": "^0.4.2",
     "@expo/metro-runtime": "~4.0.1",
     "@react-native-google-signin/google-signin": "^16.1.2",
     "@supabase/supabase-js": "^2.49.4",
@@ -49,6 +50,7 @@
     "@babel/core": "^7.25.2",
     "@types/react": "~19.0.10",
     "pg": "^8.20.0",
+    "playwright": "^1.61.1",
     "typescript": "~5.8.3"
   },
   "resolutions": {

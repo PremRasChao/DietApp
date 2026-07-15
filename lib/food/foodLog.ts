@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
+import { DEV_BYPASS_AUTH, DEV_USER_ID } from "@/lib/auth/devBypass";
 
 export type FoodLogEntry = {
   id: string;
@@ -16,6 +17,7 @@ export type FoodLogEntry = {
 export type LogFoodInput = Omit<FoodLogEntry, "id" | "logged_at">;
 
 async function getUserId(): Promise<string> {
+  if (DEV_BYPASS_AUTH) return DEV_USER_ID;
   const { data } = await supabase.auth.getUser();
   if (!data.user?.id) throw new Error("Not authenticated");
   return data.user.id;

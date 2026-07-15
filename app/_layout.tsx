@@ -12,9 +12,17 @@ import {
 } from "@expo-google-fonts/inter";
 import {
   Fraunces_300Light,
+  Fraunces_500Medium,
+  Fraunces_600SemiBold,
   Fraunces_700Bold,
   Fraunces_700Bold_Italic,
 } from "@expo-google-fonts/fraunces";
+import {
+  PublicSans_400Regular,
+  PublicSans_500Medium,
+  PublicSans_600SemiBold,
+  PublicSans_700Bold,
+} from "@expo-google-fonts/public-sans";
 import { configureGoogleSignin } from "@/lib/auth/googleSignin";
 
 export default function RootLayout() {
@@ -24,8 +32,14 @@ export default function RootLayout() {
     Inter_600SemiBold,
     Inter_700Bold,
     Fraunces_300Light,
+    Fraunces_500Medium,
+    Fraunces_600SemiBold,
     Fraunces_700Bold,
     Fraunces_700Bold_Italic,
+    PublicSans_400Regular,
+    PublicSans_500Medium,
+    PublicSans_600SemiBold,
+    PublicSans_700Bold,
   });
 
   // Configure Google Sign-In once at startup (no-op on web).

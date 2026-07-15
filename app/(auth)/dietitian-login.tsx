@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { View, Text, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,7 +8,8 @@ import { useSession } from "@/lib/auth/useSession";
 import { supabase } from "@/lib/supabase/client";
 import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 import { AppleSignInButton } from "@/components/auth/AppleSignInButton";
-import { colors } from "@/lib/tokens";
+import { appColors, appGradient } from "@/lib/tokens";
+import { AnimatedPressable } from "@/components/ui/AnimatedPressable";
 
 export default function DietitianLoginScreen() {
   const { session, loading } = useSession();
@@ -25,23 +27,22 @@ export default function DietitianLoginScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.linen }}>
+    <LinearGradient colors={appGradient.shell} style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, paddingHorizontal: 24 }}>
-        {/* Back */}
-        <Pressable
+        <AnimatedPressable
           onPress={() => router.back()}
           style={{ marginTop: 8, marginBottom: 32, alignSelf: "flex-start", padding: 4 }}
         >
-          <Ionicons name="arrow-back" size={24} color={colors.ink} />
-        </Pressable>
+          <Ionicons name="arrow-back" size={22} color={appColors.onInk} />
+        </AnimatedPressable>
 
-        {/* Verified badge */}
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
             gap: 8,
-            backgroundColor: colors.forest + "12",
+            backgroundColor: appColors.inkRaised,
             borderRadius: 10,
             paddingVertical: 10,
             paddingHorizontal: 14,
@@ -49,12 +50,12 @@ export default function DietitianLoginScreen() {
             alignSelf: "flex-start",
           }}
         >
-          <Ionicons name="checkmark-circle" size={18} color={colors.forest} />
+          <Ionicons name="checkmark-circle" size={18} color={appColors.fat} />
           <Text
             style={{
-              fontFamily: "Inter_600SemiBold",
+              fontFamily: "PublicSans_600SemiBold",
               fontSize: 13,
-              color: colors.forest,
+              color: appColors.fat,
             }}
           >
             Dietitian ID verified
@@ -63,28 +64,28 @@ export default function DietitianLoginScreen() {
 
         <Text
           style={{
-            fontFamily: "Fraunces_700Bold",
-            fontSize: 30,
-            color: colors.ink,
+            fontFamily: "Fraunces_600SemiBold",
+            fontSize: 26,
+            color: appColors.onInk,
             marginBottom: 8,
           }}
         >
-          Sign in as Dietitian
+          Sign in as dietitian
         </Text>
         <Text
           style={{
-            fontFamily: "Inter_400Regular",
-            fontSize: 15,
-            color: colors.stone,
-            marginBottom: 40,
-            lineHeight: 22,
+            fontFamily: "PublicSans_400Regular",
+            fontSize: 14,
+            color: appColors.onInkSoft,
+            marginBottom: 36,
+            lineHeight: 21,
           }}
         >
           Access your professional dashboard, patient tools, and appointment management.
         </Text>
 
         {loading || busy ? (
-          <ActivityIndicator size="large" color={colors.forest} style={{ marginBottom: 16 }} />
+          <ActivityIndicator size="large" color={appColors.fat} style={{ marginBottom: 16 }} />
         ) : (
           <>
             <AppleSignInButton
@@ -105,17 +106,18 @@ export default function DietitianLoginScreen() {
 
         <Text
           style={{
-            fontFamily: "Inter_400Regular",
-            fontSize: 12,
-            color: colors.stone,
+            fontFamily: "PublicSans_400Regular",
+            fontSize: 11,
+            color: appColors.onInkSoft,
             textAlign: "center",
             marginTop: 24,
-            lineHeight: 18,
+            lineHeight: 17,
           }}
         >
           By signing in, you agree to our Terms of Service and Privacy Policy.
         </Text>
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }

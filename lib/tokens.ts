@@ -47,3 +47,40 @@ export const theme = {
 
 export type ColorToken = keyof typeof colors;
 export type ThemeKey = keyof typeof theme;
+
+// ── App shell design system ("the kitchen scale") ───────────────────────────
+// Scoped to (auth) + (app) screens only — marketing keeps the forest/sage/clay
+// palette above. Dark ink chrome with paper-light cards, radial macro dial.
+export const appColors = {
+  ink:          "#35617E",  // shell background — calming sky blue chrome
+  inkRaised:    "#1E425C",  // inner stat chips/cards — deeper, distinct blue so they read apart from the gradient
+  inkText:      "#16232C",  // guaranteed-dark text/icons on bright accent elements (fat buttons, badges)
+  paper:        "#F7F4EC",  // light cards
+  paperDim:     "#EDE8DA",  // dial track / subtle paper variant
+  text:         "#23211D",  // text on paper
+  textSoft:     "#6B6A5F",  // secondary text on paper
+  onInk:        "#F7F4EC",  // primary text on dark shell
+  onInkSoft:    "#C4D8E4",  // secondary text on dark shell
+  carb:         "#E8A33D",  // turmeric
+  protein:      "#C23B5E",  // beet
+  fat:          "#6B8F5C",  // kale — also primary/CTA accent
+  border:       "#D8D3C2",
+  divider:      "#ECE7D9",
+  danger:       "#C23B5E",
+} as const;
+
+// Shell background gradient — "calming sky blue," not a flat fill.
+export const appGradient = {
+  shell: ["#4A85AB", "#254A63"] as const,
+} as const;
+
+export const appMacroColors = {
+  protein: appColors.protein,
+  carbs:   appColors.carb,
+  fat:     appColors.fat,
+} as const;
+
+export const appFonts = {
+  body:    "PublicSans",
+  display: "Fraunces",
+} as const;

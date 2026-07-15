@@ -1,17 +1,18 @@
-import { View, ActivityIndicator } from "react-native";
+import { ActivityIndicator } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, Tabs } from "expo-router";
 import { CustomTabBar } from "@/components/app/CustomTabBar";
 import { useSession } from "@/lib/auth/useSession";
-import { colors } from "@/lib/tokens";
+import { appColors, appGradient } from "@/lib/tokens";
 
 export default function AppLayout() {
   const { session, loading } = useSession();
 
   if (loading) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.linen }}>
-        <ActivityIndicator size="large" color={colors.forest} />
-      </View>
+      <LinearGradient colors={appGradient.shell} style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" color={appColors.fat} />
+      </LinearGradient>
     );
   }
 

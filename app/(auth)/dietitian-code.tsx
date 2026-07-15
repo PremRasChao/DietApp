@@ -2,19 +2,20 @@ import { useState } from "react";
 import {
   View,
   Text,
-  Pressable,
   TextInput,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "@/lib/supabase/client";
 import { canAttempt, isLocked, recordAttempt, remaining } from "@/lib/auth/dietitianRateLimit";
-import { colors } from "@/lib/tokens";
+import { appColors, appGradient } from "@/lib/tokens";
+import { AnimatedPressable } from "@/components/ui/AnimatedPressable";
 
 export default function DietitianCodeScreen() {
   const [code, setCode] = useState("");
@@ -77,7 +78,8 @@ export default function DietitianCodeScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.linen }}>
+    <LinearGradient colors={appGradient.shell} style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
@@ -86,57 +88,54 @@ export default function DietitianCodeScreen() {
           contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Back */}
-          <Pressable
+          <AnimatedPressable
             onPress={() => router.back()}
             style={{ marginTop: 8, marginBottom: 32, alignSelf: "flex-start", padding: 4 }}
           >
-            <Ionicons name="arrow-back" size={24} color={colors.ink} />
-          </Pressable>
+            <Ionicons name="arrow-back" size={22} color={appColors.onInk} />
+          </AnimatedPressable>
 
-          {/* Icon */}
           <View
             style={{
-              width: 64,
-              height: 64,
-              borderRadius: 32,
-              backgroundColor: colors.clay + "18",
+              width: 52,
+              height: 52,
+              borderRadius: 26,
+              backgroundColor: "#F5E2D6",
               alignItems: "center",
               justifyContent: "center",
               marginBottom: 20,
             }}
           >
-            <Ionicons name="shield-checkmark-outline" size={32} color={colors.clay} />
+            <Ionicons name="shield-checkmark-outline" size={24} color="#A9532C" />
           </View>
 
           <Text
             style={{
-              fontFamily: "Fraunces_700Bold",
-              fontSize: 28,
-              color: colors.ink,
+              fontFamily: "Fraunces_600SemiBold",
+              fontSize: 24,
+              color: appColors.onInk,
               marginBottom: 8,
             }}
           >
-            Dietitian Verification
+            Dietitian verification
           </Text>
           <Text
             style={{
-              fontFamily: "Inter_400Regular",
-              fontSize: 15,
-              color: colors.stone,
-              marginBottom: 36,
-              lineHeight: 22,
+              fontFamily: "PublicSans_400Regular",
+              fontSize: 14,
+              color: appColors.onInkSoft,
+              marginBottom: 32,
+              lineHeight: 21,
             }}
           >
             Enter the unique ID provided to you by Nutrition Wize to verify your credentials.
           </Text>
 
-          {/* Input */}
           <Text
             style={{
-              fontFamily: "Inter_600SemiBold",
-              fontSize: 13,
-              color: colors.ink,
+              fontFamily: "PublicSans_600SemiBold",
+              fontSize: 12,
+              color: appColors.onInkSoft,
               marginBottom: 8,
               textTransform: "uppercase",
               letterSpacing: 0.5,
@@ -151,7 +150,7 @@ export default function DietitianCodeScreen() {
               setError(null);
             }}
             placeholder="e.g. DT-12345"
-            placeholderTextColor={colors.stone}
+            placeholderTextColor={appColors.textSoft}
             autoCapitalize="none"
             autoCorrect={false}
             returnKeyType="done"
@@ -159,19 +158,18 @@ export default function DietitianCodeScreen() {
             editable={!loading && !isLocked()}
             style={{
               height: 52,
-              borderRadius: 10,
-              borderWidth: 1.5,
-              borderColor: error ? colors.clay : "#d0cbc4",
-              backgroundColor: colors.white,
+              borderRadius: 14,
+              borderWidth: error ? 1.5 : 0,
+              borderColor: appColors.danger,
+              backgroundColor: appColors.paper,
               paddingHorizontal: 16,
-              fontFamily: "Inter_400Regular",
+              fontFamily: "PublicSans_400Regular",
               fontSize: 16,
-              color: colors.ink,
+              color: appColors.text,
               marginBottom: 8,
             }}
           />
 
-          {/* Error */}
           {error && (
             <View
               style={{
@@ -181,12 +179,12 @@ export default function DietitianCodeScreen() {
                 marginBottom: 16,
               }}
             >
-              <Ionicons name="alert-circle-outline" size={16} color={colors.clay} />
+              <Ionicons name="alert-circle-outline" size={16} color={appColors.danger} />
               <Text
                 style={{
-                  fontFamily: "Inter_400Regular",
+                  fontFamily: "PublicSans_400Regular",
                   fontSize: 13,
-                  color: colors.clay,
+                  color: appColors.danger,
                   flex: 1,
                 }}
               >
@@ -197,52 +195,48 @@ export default function DietitianCodeScreen() {
 
           <View style={{ height: error ? 8 : 24 }} />
 
-          {/* Submit */}
-          <Pressable
+          <AnimatedPressable
             onPress={handleSubmit}
             disabled={loading || isLocked() || !code.trim()}
-            style={({ pressed }) => ({
+            style={{
               height: 52,
-              borderRadius: 12,
+              borderRadius: 14,
               backgroundColor:
-                loading || isLocked() || !code.trim()
-                  ? colors.stone + "60"
-                  : pressed
-                  ? "#1e3328"
-                  : colors.forest,
+                loading || isLocked() || !code.trim() ? appColors.inkRaised : appColors.fat,
               alignItems: "center",
               justifyContent: "center",
-            })}
+            }}
           >
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={appColors.onInk} />
             ) : (
               <Text
                 style={{
-                  fontFamily: "Inter_700Bold",
-                  fontSize: 16,
-                  color: "#fff",
+                  fontFamily: "PublicSans_600SemiBold",
+                  fontSize: 15,
+                  color: appColors.inkText,
                 }}
               >
                 Verify ID
               </Text>
             )}
-          </Pressable>
+          </AnimatedPressable>
 
           <Text
             style={{
-              fontFamily: "Inter_400Regular",
-              fontSize: 12,
-              color: colors.stone,
+              fontFamily: "PublicSans_400Regular",
+              fontSize: 11,
+              color: appColors.onInkSoft,
               textAlign: "center",
               marginTop: 20,
-              lineHeight: 18,
+              lineHeight: 17,
             }}
           >
             Don't have an ID? Contact your Nutrition Wize administrator.
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }

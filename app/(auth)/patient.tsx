@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { View, Text, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,7 +8,8 @@ import { useSession } from "@/lib/auth/useSession";
 import { supabase } from "@/lib/supabase/client";
 import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 import { AppleSignInButton } from "@/components/auth/AppleSignInButton";
-import { colors } from "@/lib/tokens";
+import { appColors, appGradient } from "@/lib/tokens";
+import { AnimatedPressable } from "@/components/ui/AnimatedPressable";
 
 export default function PatientLoginScreen() {
   const { session, loading } = useSession();
@@ -25,55 +27,54 @@ export default function PatientLoginScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.linen }}>
+    <LinearGradient colors={appGradient.shell} style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, paddingHorizontal: 24 }}>
-        {/* Back */}
-        <Pressable
+        <AnimatedPressable
           onPress={() => router.back()}
           style={{ marginTop: 8, marginBottom: 32, alignSelf: "flex-start", padding: 4 }}
         >
-          <Ionicons name="arrow-back" size={24} color={colors.ink} />
-        </Pressable>
+          <Ionicons name="arrow-back" size={22} color={appColors.onInk} />
+        </AnimatedPressable>
 
-        {/* Icon */}
         <View
           style={{
-            width: 64,
-            height: 64,
-            borderRadius: 32,
-            backgroundColor: colors.sage + "25",
+            width: 52,
+            height: 52,
+            borderRadius: 26,
+            backgroundColor: "#E3ECD9",
             alignItems: "center",
             justifyContent: "center",
             marginBottom: 20,
           }}
         >
-          <Ionicons name="person-outline" size={32} color={colors.forest} />
+          <Ionicons name="restaurant-outline" size={24} color="#4A6B3D" />
         </View>
 
         <Text
           style={{
-            fontFamily: "Fraunces_700Bold",
-            fontSize: 30,
-            color: colors.ink,
+            fontFamily: "Fraunces_600SemiBold",
+            fontSize: 26,
+            color: appColors.onInk,
             marginBottom: 8,
           }}
         >
-          Sign in as Patient
+          Sign in as patient
         </Text>
         <Text
           style={{
-            fontFamily: "Inter_400Regular",
-            fontSize: 15,
-            color: colors.stone,
-            marginBottom: 40,
-            lineHeight: 22,
+            fontFamily: "PublicSans_400Regular",
+            fontSize: 14,
+            color: appColors.onInkSoft,
+            marginBottom: 36,
+            lineHeight: 21,
           }}
         >
-          Track your nutrition, log meals, and work toward your goals.
+          Track meals, log what you eat, and work toward your goals with your dietitian.
         </Text>
 
         {loading || busy ? (
-          <ActivityIndicator size="large" color={colors.forest} style={{ marginBottom: 16 }} />
+          <ActivityIndicator size="large" color={appColors.fat} style={{ marginBottom: 16 }} />
         ) : (
           <>
             <AppleSignInButton
@@ -94,17 +95,18 @@ export default function PatientLoginScreen() {
 
         <Text
           style={{
-            fontFamily: "Inter_400Regular",
-            fontSize: 12,
-            color: colors.stone,
+            fontFamily: "PublicSans_400Regular",
+            fontSize: 11,
+            color: appColors.onInkSoft,
             textAlign: "center",
             marginTop: 24,
-            lineHeight: 18,
+            lineHeight: 17,
           }}
         >
           By signing in, you agree to our Terms of Service and Privacy Policy.
         </Text>
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }

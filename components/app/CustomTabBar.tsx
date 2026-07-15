@@ -1,17 +1,20 @@
-import { View, Text, Pressable } from "react-native";
+import { View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors } from "@/lib/tokens";
+import { MotiView } from "moti";
+import { appColors, appGradient } from "@/lib/tokens";
+import { AnimatedPressable } from "@/components/ui/AnimatedPressable";
 
 type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
 
-const TABS: { key: string; label: string; icon: IoniconName; iconActive: IoniconName }[] = [
-  { key: "index",   label: "Home",  icon: "home-outline",       iconActive: "home" },
-  { key: "plan",    label: "Meals", icon: "restaurant-outline",  iconActive: "restaurant" },
-  { key: "log",     label: "Log",   icon: "add-outline",        iconActive: "add" },
-  { key: "chat",    label: "Chat",  icon: "chatbubble-outline",  iconActive: "chatbubble" },
-  { key: "profile", label: "Me",    icon: "person-outline",     iconActive: "person" },
+const TABS: { key: string; icon: IoniconName; iconActive: IoniconName }[] = [
+  { key: "index",   icon: "home-outline",        iconActive: "home" },
+  { key: "plan",    icon: "restaurant-outline",   iconActive: "restaurant" },
+  { key: "log",     icon: "add",                  iconActive: "add" },
+  { key: "chat",    icon: "chatbubble-outline",   iconActive: "chatbubble" },
+  { key: "profile", icon: "person-outline",       iconActive: "person" },
 ];
 
 export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
@@ -20,21 +23,21 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   return (
     <View style={{
       position: "absolute",
-      bottom: 0, left: 0, right: 0,
-      paddingBottom: insets.bottom,
-      backgroundColor: colors.white,
-      borderTopWidth: 1,
-      borderTopColor: "#EDEAE3",
+      bottom: Math.max(insets.bottom, 12),
+      left: 20, right: 20,
+      backgroundColor: appColors.paper,
+      borderRadius: 999,
       shadowColor: "#000",
-      shadowOffset: { width: 0, height: -4 },
-      shadowOpacity: 0.06,
-      shadowRadius: 16,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.18,
+      shadowRadius: 20,
       elevation: 16,
     }}>
       <View style={{
         flexDirection: "row",
-        paddingTop: 10,
-        paddingBottom: 4,
+        alignItems: "center",
+        justifyContent: "space-around",
+        paddingVertical: 9,
         paddingHorizontal: 8,
       }}>
         {TABS.map((tab, index) => {
@@ -42,53 +45,37 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
           const isLog = tab.key === "log";
 
           return (
-            <Pressable
+            <AnimatedPressable
               key={tab.key}
               onPress={() => navigation.navigate(tab.key)}
-              style={({ pressed }) => ({
-                flex: 1, alignItems: "center", justifyContent: "center",
-                opacity: pressed ? 0.7 : 1,
-              })}
+              scaleTo={isLog ? 0.92 : 0.85}
+              hoverScale={isLog ? 1.22 : undefined}
+              style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
             >
               {isLog ? (
-                // Centre log button — large forest green circle
-                <View style={{
-                  width: 56, height: 56, borderRadius: 28,
-                  backgroundColor: colors.forest,
-                  alignItems: "center", justifyContent: "center",
-                  marginTop: -20,
-                  shadowColor: colors.forest,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.35,
-                  shadowRadius: 10,
-                  elevation: 8,
-                }}>
-                  <Ionicons name="add" size={28} color={colors.white} />
-                </View>
-              ) : (
-                <View style={{ alignItems: "center", gap: 3 }}>
-                  <View style={{
-                    width: 32, height: 32, borderRadius: 16,
-                    backgroundColor: focused ? `${colors.forest}1A` : "transparent",
+                <LinearGradient
+                  colors={appGradient.shell}
+                  style={{
+                    width: 40, height: 40, borderRadius: 20,
                     alignItems: "center", justifyContent: "center",
-                  }}>
-                    <Ionicons
-                      name={focused ? tab.iconActive : tab.icon}
-                      size={22}
-                      color={focused ? colors.forest : colors.stone}
-                    />
-                  </View>
-                  <Text style={{
-                    fontFamily: focused ? "Inter_600SemiBold" : "Inter_400Regular",
-                    fontSize: 10,
-                    color: focused ? colors.forest : colors.stone,
-                    letterSpacing: 0.2,
-                  }}>
-                    {tab.label}
-                  </Text>
-                </View>
+                    transform: [{ translateY: -9 }],
+                  }}
+                >
+                  <Ionicons name="add" size={20} color={appColors.paper} />
+                </LinearGradient>
+              ) : (
+                <MotiView
+                  animate={{ scale: focused ? 1.15 : 1 }}
+                  transition={{ type: "spring", damping: 12, stiffness: 260 }}
+                >
+                  <Ionicons
+                    name={focused ? tab.iconActive : tab.icon}
+                    size={18}
+                    color={focused ? appColors.text : "#8A8874"}
+                  />
+                </MotiView>
               )}
-            </Pressable>
+            </AnimatedPressable>
           );
         })}
       </View>

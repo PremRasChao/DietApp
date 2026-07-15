@@ -2,9 +2,12 @@ import {
   View, Text, TextInput, ScrollView, Pressable,
   ActivityIndicator, Image, Modal,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useState, useEffect, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { colors, macroColors } from "@/lib/tokens";
+import { MotiView } from "moti";
+import { appColors, appMacroColors, appGradient } from "@/lib/tokens";
+import { AnimatedPressable } from "@/components/ui/AnimatedPressable";
 import { searchFood, FoodResult } from "@/lib/food/openFoodFacts";
 import { searchLocal } from "@/lib/food/commonFoods";
 import {
@@ -31,19 +34,19 @@ let featuredCache: DR[] = [];
 const detailsCache = new Map<string, RecipeDetails | false>();
 
 const CUISINE_HUE: Record<string, string> = {
-  Indian: "#E07B39", Japanese: "#C44B3A", Mexican: "#F5A623",
-  Greek: "#2D4A3E", Thai: "#7B68EE", Moroccan: "#C44B3A",
-  Korean: "#E07B39", Brazilian: "#5A8A78", Italian: "#C44B3A",
-  Ethiopian: "#8B6914", Lebanese: "#5A8A78", Vietnamese: "#2D4A3E",
-  Peruvian: "#C44B3A", Turkish: "#E07B39", Canadian: "#5A8A78",
-  International: "#5A8A78",
+  Indian: appColors.carb, Japanese: appColors.protein, Mexican: "#F5A623",
+  Greek: appColors.fat, Thai: "#7B68EE", Moroccan: appColors.protein,
+  Korean: appColors.carb, Brazilian: appColors.fat, Italian: appColors.protein,
+  Ethiopian: "#8B6914", Lebanese: appColors.fat, Vietnamese: appColors.fat,
+  Peruvian: appColors.protein, Turkish: appColors.carb, Canadian: appColors.fat,
+  International: appColors.fat,
 };
 
 const TAG_COLOR: Record<string, string> = {
-  "Vegan": colors.sage, "Keto": colors.clay, "Mediterranean": colors.forest,
-  "High Protein": colors.forest, "Weight Loss": colors.clay, "Sports": colors.sage,
-  "Diabetes": "#8B6914", "Cultural": colors.sage, "Bone Health": colors.sage,
-  "Vegetarian": colors.sage, "Balanced": colors.forest,
+  "Vegan": appColors.fat, "Keto": appColors.protein, "Mediterranean": appColors.fat,
+  "High Protein": appColors.fat, "Weight Loss": appColors.protein, "Sports": appColors.fat,
+  "Diabetes": "#8B6914", "Cultural": appColors.fat, "Bone Health": appColors.fat,
+  "Vegetarian": appColors.fat, "Balanced": appColors.fat,
 };
 
 function chunk<T>(arr: T[], size: number): T[][] {
@@ -121,12 +124,12 @@ function RecipeDetailModal({ recipe, onClose }: { recipe: DR | null; onClose: ()
   }, [recipe?.id]);
 
   if (!recipe) return null;
-  const hue = CUISINE_HUE[recipe.cuisine] ?? colors.sage;
+  const hue = CUISINE_HUE[recipe.cuisine] ?? appColors.fat;
 
   return (
     <Modal visible animationType="slide" transparent>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(28,25,23,0.5)" }} onPress={onClose} />
-      <View style={{ backgroundColor: colors.white, borderTopLeftRadius: 28, borderTopRightRadius: 28,
+      <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }} onPress={onClose} />
+      <LinearGradient colors={appGradient.shell} style={{ borderTopLeftRadius: 28, borderTopRightRadius: 28,
         position: "absolute", bottom: 0, left: 0, right: 0, maxHeight: "88%" }}>
         <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
           {recipe.thumbnail ? (
@@ -134,36 +137,36 @@ function RecipeDetailModal({ recipe, onClose }: { recipe: DR | null; onClose: ()
               style={{ width: "100%", height: 220, borderTopLeftRadius: 28, borderTopRightRadius: 28 }}
               resizeMode="cover" />
           ) : (
-            <View style={{ height: 160, backgroundColor: `${hue}25`,
+            <View style={{ height: 160, backgroundColor: `${hue}30`,
               borderTopLeftRadius: 28, borderTopRightRadius: 28,
               alignItems: "center", justifyContent: "center" }}>
               <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: hue,
                 alignItems: "center", justifyContent: "center" }}>
-                <Ionicons name="restaurant" size={32} color={colors.white} />
+                <Ionicons name="restaurant" size={32} color={appColors.paper} />
               </View>
             </View>
           )}
 
-          <Pressable onPress={onClose} style={{ position: "absolute", top: 16, right: 16,
-            width: 34, height: 34, borderRadius: 17, backgroundColor: "rgba(0,0,0,0.35)",
+          <AnimatedPressable onPress={onClose} style={{ position: "absolute", top: 16, right: 16,
+            width: 34, height: 34, borderRadius: 17, backgroundColor: "rgba(0,0,0,0.4)",
             alignItems: "center", justifyContent: "center" }}>
-            <Ionicons name="close" size={20} color={colors.white} />
-          </Pressable>
+            <Ionicons name="close" size={20} color={appColors.paper} />
+          </AnimatedPressable>
 
           <View style={{ padding: 24, paddingBottom: 48, gap: 20 }}>
             <View>
-              <Text style={{ fontFamily: "Fraunces_700Bold", fontSize: 26, color: colors.ink, marginBottom: 10 }}>
+              <Text style={{ fontFamily: "Fraunces_600SemiBold", fontSize: 24, color: appColors.onInk, marginBottom: 10 }}>
                 {recipe.name}
               </Text>
               <View style={{ flexDirection: "row", gap: 16 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                  <Ionicons name="globe-outline" size={14} color={colors.stone} />
-                  <Text style={{ fontFamily: "Inter_500Medium", fontSize: 13, color: colors.stone }}>{recipe.cuisine}</Text>
+                  <Ionicons name="globe-outline" size={14} color={appColors.onInkSoft} />
+                  <Text style={{ fontFamily: "PublicSans_500Medium", fontSize: 13, color: appColors.onInkSoft }}>{recipe.cuisine}</Text>
                 </View>
                 {recipe.prepTime !== "—" && (
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <Ionicons name="time-outline" size={14} color={colors.stone} />
-                    <Text style={{ fontFamily: "Inter_500Medium", fontSize: 13, color: colors.stone }}>{recipe.prepTime}</Text>
+                    <Ionicons name="time-outline" size={14} color={appColors.onInkSoft} />
+                    <Text style={{ fontFamily: "PublicSans_500Medium", fontSize: 13, color: appColors.onInkSoft }}>{recipe.prepTime}</Text>
                   </View>
                 )}
               </View>
@@ -172,9 +175,9 @@ function RecipeDetailModal({ recipe, onClose }: { recipe: DR | null; onClose: ()
             {recipe.tags.length > 0 && (
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
                 {recipe.tags.map((t) => (
-                  <View key={t} style={{ backgroundColor: `${colors.forest}15`, borderRadius: 8,
+                  <View key={t} style={{ backgroundColor: appColors.inkRaised, borderRadius: 8,
                     paddingHorizontal: 10, paddingVertical: 5 }}>
-                    <Text style={{ fontFamily: "Inter_500Medium", fontSize: 12, color: colors.forest }}>{t}</Text>
+                    <Text style={{ fontFamily: "PublicSans_500Medium", fontSize: 12, color: appColors.fat }}>{t}</Text>
                   </View>
                 ))}
               </View>
@@ -182,22 +185,22 @@ function RecipeDetailModal({ recipe, onClose }: { recipe: DR | null; onClose: ()
 
             {/* Nutrition */}
             {recipe.kcal > 0 ? (
-              <View style={{ backgroundColor: colors.linen, borderRadius: 18, padding: 20 }}>
-                <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 11, color: colors.stone,
+              <View style={{ backgroundColor: appColors.paper, borderRadius: 18, padding: 20 }}>
+                <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 11, color: appColors.textSoft,
                   letterSpacing: 0.6, textTransform: "uppercase", marginBottom: 16 }}>
                   Nutrition per serving
                 </Text>
                 <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                   {[
-                    { label: "Energy",  value: recipe.kcal,      unit: "kcal", color: colors.clay },
-                    { label: "Protein", value: recipe.protein_g,  unit: "g",    color: macroColors.protein },
-                    { label: "Carbs",   value: recipe.carbs_g,   unit: "g",    color: macroColors.carbs },
-                    { label: "Fat",     value: recipe.fat_g,     unit: "g",    color: macroColors.fat },
+                    { label: "Energy",  value: recipe.kcal,      unit: "kcal", color: appColors.carb },
+                    { label: "Protein", value: recipe.protein_g,  unit: "g",    color: appMacroColors.protein },
+                    { label: "Carbs",   value: recipe.carbs_g,   unit: "g",    color: appMacroColors.carbs },
+                    { label: "Fat",     value: recipe.fat_g,     unit: "g",    color: appMacroColors.fat },
                   ].map(({ label, value, unit, color }) => (
                     <View key={label} style={{ alignItems: "center", gap: 3 }}>
-                      <Text style={{ fontFamily: "Fraunces_700Bold", fontSize: 26, color: colors.ink }}>{value}</Text>
-                      <Text style={{ fontFamily: "Inter_400Regular", fontSize: 12, color: colors.stone }}>{unit}</Text>
-                      <Text style={{ fontFamily: "Inter_500Medium", fontSize: 11, color }}>{label}</Text>
+                      <Text style={{ fontFamily: "Fraunces_600SemiBold", fontSize: 24, color: appColors.text }}>{value}</Text>
+                      <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 12, color: appColors.textSoft }}>{unit}</Text>
+                      <Text style={{ fontFamily: "PublicSans_500Medium", fontSize: 11, color }}>{label}</Text>
                     </View>
                   ))}
                 </View>
@@ -207,8 +210,8 @@ function RecipeDetailModal({ recipe, onClose }: { recipe: DR | null; onClose: ()
             {/* Ingredients & Steps */}
             {detailsLoading ? (
               <View style={{ alignItems: "center", paddingVertical: 20, gap: 10 }}>
-                <ActivityIndicator size="small" color={colors.forest} />
-                <Text style={{ fontFamily: "Inter_400Regular", fontSize: 13, color: colors.stone }}>
+                <ActivityIndicator size="small" color={appColors.fat} />
+                <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 13, color: appColors.onInkSoft }}>
                   Loading recipe…
                 </Text>
               </View>
@@ -216,15 +219,15 @@ function RecipeDetailModal({ recipe, onClose }: { recipe: DR | null; onClose: ()
               <>
                 {details.ingredients.length > 0 && (
                   <View>
-                    <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 11, color: colors.stone,
+                    <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 11, color: appColors.onInkSoft,
                       letterSpacing: 0.6, textTransform: "uppercase", marginBottom: 12 }}>
                       Ingredients
                     </Text>
                     <View style={{ gap: 8 }}>
                       {details.ingredients.map((ing, i) => (
                         <View key={i} style={{ flexDirection: "row", alignItems: "flex-start", gap: 10 }}>
-                          <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.sage, marginTop: 6 }} />
-                          <Text style={{ flex: 1, fontFamily: "Inter_400Regular", fontSize: 14, color: colors.ink, lineHeight: 20 }}>
+                          <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: appColors.fat, marginTop: 6 }} />
+                          <Text style={{ flex: 1, fontFamily: "PublicSans_400Regular", fontSize: 14, color: appColors.onInk, lineHeight: 20 }}>
                             {ing.amount ? `${ing.amount} ` : ""}{ing.name}
                           </Text>
                         </View>
@@ -235,20 +238,20 @@ function RecipeDetailModal({ recipe, onClose }: { recipe: DR | null; onClose: ()
 
                 {details.steps.length > 0 && (
                   <View>
-                    <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 11, color: colors.stone,
+                    <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 11, color: appColors.onInkSoft,
                       letterSpacing: 0.6, textTransform: "uppercase", marginBottom: 12 }}>
                       Instructions
                     </Text>
                     <View style={{ gap: 14 }}>
                       {details.steps.map((step, i) => (
                         <View key={i} style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
-                          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: colors.forest,
+                          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: appColors.fat,
                             alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                            <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 11, color: colors.white }}>
+                            <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 11, color: appColors.inkText }}>
                               {i + 1}
                             </Text>
                           </View>
-                          <Text style={{ flex: 1, fontFamily: "Inter_400Regular", fontSize: 14, color: colors.ink,
+                          <Text style={{ flex: 1, fontFamily: "PublicSans_400Regular", fontSize: 14, color: appColors.onInk,
                             lineHeight: 22, paddingTop: 3 }}>
                             {step}
                           </Text>
@@ -259,11 +262,11 @@ function RecipeDetailModal({ recipe, onClose }: { recipe: DR | null; onClose: ()
                 )}
               </>
             ) : (
-              <View style={{ backgroundColor: colors.linen, borderRadius: 14, padding: 16, gap: 6 }}>
-                <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 13, color: colors.ink }}>
+              <View style={{ backgroundColor: appColors.inkRaised, borderRadius: 14, padding: 16, gap: 6 }}>
+                <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 13, color: appColors.onInk }}>
                   Recipe steps not available
                 </Text>
-                <Text style={{ fontFamily: "Inter_400Regular", fontSize: 13, color: colors.stone }}>
+                <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 13, color: appColors.onInkSoft }}>
                   {/^\d+$/.test(recipe.id)
                     ? "Couldn't load steps right now — API limit reached. Try again later or search this dish in the Foods tab."
                     : "Search for this dish in the Recipes tab to find a version with full ingredients and instructions."}
@@ -272,59 +275,72 @@ function RecipeDetailModal({ recipe, onClose }: { recipe: DR | null; onClose: ()
             )}
           </View>
         </ScrollView>
-      </View>
+      </LinearGradient>
     </Modal>
   );
 }
 
 // ── Recipe card (pressable) ────────────────────────────────────────────────────
 function RecipeCard({ r, onPress }: { r: DR; onPress: () => void }) {
-  const hue = CUISINE_HUE[r.cuisine] ?? colors.sage;
+  const hue = CUISINE_HUE[r.cuisine] ?? appColors.fat;
   return (
-    <Pressable onPress={onPress}
-      style={({ pressed }) => ({ backgroundColor: colors.white, borderRadius: 18,
-        overflow: "hidden", opacity: pressed ? 0.88 : 1,
-        shadowColor: "#000", shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.07, shadowRadius: 10, elevation: 2 })}>
+    <AnimatedPressable onPress={onPress}
+      style={{ backgroundColor: appColors.paper, borderRadius: 16, overflow: "hidden" }}>
       {r.thumbnail ? (
         <Image source={{ uri: r.thumbnail }} style={{ width: "100%", height: 80 }} resizeMode="cover" />
       ) : (
-        <View style={{ height: 80, backgroundColor: `${hue}20`, alignItems: "center", justifyContent: "center" }}>
+        <View style={{ height: 80, backgroundColor: `${hue}25`, alignItems: "center", justifyContent: "center" }}>
           <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: hue,
             alignItems: "center", justifyContent: "center" }}>
-            <Ionicons name="restaurant" size={22} color={colors.white} />
+            <Ionicons name="restaurant" size={22} color={appColors.paper} />
           </View>
         </View>
       )}
       <View style={{ padding: 12 }}>
-        <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 13, color: colors.ink, marginBottom: 2 }} numberOfLines={2}>
+        <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 13, color: appColors.text, marginBottom: 4 }} numberOfLines={2}>
           {r.name}
         </Text>
-        <Text style={{ fontFamily: "Inter_400Regular", fontSize: 11, color: colors.stone, marginBottom: 6 }}>
+        <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 10, color: "#8A8874", marginBottom: 7 }}>
           {r.cuisine} · {r.prepTime}
         </Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
           {r.tags.slice(0, 2).map((t) => (
-            <View key={t} style={{ backgroundColor: `${colors.forest}15`, borderRadius: 6,
-              paddingHorizontal: 6, paddingVertical: 2 }}>
-              <Text style={{ fontFamily: "Inter_500Medium", fontSize: 10, color: colors.forest }}>{t}</Text>
+            <View key={t} style={{ backgroundColor: `${TAG_COLOR[t] ?? appColors.fat}20`, borderRadius: 999,
+              paddingHorizontal: 8, paddingVertical: 3 }}>
+              <Text style={{ fontFamily: "PublicSans_500Medium", fontSize: 9, color: TAG_COLOR[t] ?? appColors.fat }}>{t}</Text>
             </View>
           ))}
         </View>
         {r.kcal > 0 ? (
-          <>
-            <Text style={{ fontFamily: "Inter_700Bold", fontSize: 14, color: colors.ink }}>
-              {r.kcal}{" "}<Text style={{ fontFamily: "Inter_400Regular", fontSize: 11, color: colors.stone }}>kcal</Text>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }}>
+            <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 15, color: appColors.text }}>
+              {r.kcal}
             </Text>
-            <Text style={{ fontFamily: "Inter_400Regular", fontSize: 11, color: colors.stone, marginTop: 2 }}>
-              P {r.protein_g}g · C {r.carbs_g}g · F {r.fat_g}g
-            </Text>
-          </>
+            <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 9, color: "#8A8874" }}>kcal</Text>
+          </View>
         ) : (
-          <Text style={{ fontFamily: "Inter_400Regular", fontSize: 11, color: colors.sage }}>Tap to view →</Text>
+          <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 11, color: appColors.fat }}>Tap to view →</Text>
         )}
       </View>
-    </Pressable>
+    </AnimatedPressable>
+  );
+}
+
+// ── Shared search bar ──────────────────────────────────────────────────────────
+function SearchBar({ value, onChangeText, placeholder, loading }: {
+  value: string; onChangeText: (v: string) => void; placeholder: string; loading?: boolean;
+}) {
+  return (
+    <View style={{ paddingHorizontal: 20, marginBottom: 16 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10,
+        backgroundColor: appColors.inkRaised, borderRadius: 14, paddingHorizontal: 14, height: 48 }}>
+        <Ionicons name="search-outline" size={16} color={appColors.onInkSoft} />
+        <TextInput value={value} onChangeText={onChangeText} placeholder={placeholder}
+          placeholderTextColor={appColors.onInkSoft}
+          style={{ flex: 1, fontFamily: "PublicSans_400Regular", fontSize: 14, color: appColors.onInk }} />
+        {loading && <ActivityIndicator size="small" color={appColors.fat} />}
+      </View>
+    </View>
   );
 }
 
@@ -351,62 +367,45 @@ function FoodsTab() {
 
   return (
     <View>
-      <View style={{ paddingHorizontal: 20, marginBottom: 16 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10,
-          backgroundColor: colors.white, borderRadius: 16, paddingHorizontal: 16, height: 50,
-          shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 1 }}>
-          <Ionicons name="search-outline" size={18} color={colors.stone} />
-          <TextInput value={query} onChangeText={setQuery} placeholder="Add foods to your plan…"
-            placeholderTextColor={`${colors.stone}80`}
-            style={{ flex: 1, fontFamily: "Inter_400Regular", fontSize: 15, color: colors.ink }} />
-          {searching && <ActivityIndicator size="small" color={colors.sage} />}
-          {query.length > 0 && !searching && (
-            <Pressable onPress={() => { setQuery(""); setResults([]); }}>
-              <Ionicons name="close-circle" size={20} color={colors.stone} />
-            </Pressable>
-          )}
-        </View>
-      </View>
+      <SearchBar value={query} onChangeText={setQuery} placeholder="Add foods to your plan…" loading={searching} />
       {results.length > 0 ? (
-        <View style={{ marginHorizontal: 20, backgroundColor: colors.white, borderRadius: 18, overflow: "hidden",
-          shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 12, elevation: 2 }}>
+        <View style={{ marginHorizontal: 20, backgroundColor: appColors.paper, borderRadius: 16, overflow: "hidden" }}>
           {results.slice(0, 10).map((item) => (
-            <Pressable key={item.id} style={({ pressed }) => ({
-              flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingVertical: 14,
-              backgroundColor: pressed ? `${colors.forest}06` : "transparent",
-              borderBottomWidth: 1, borderBottomColor: "#F0EDE6" })}>
+            <AnimatedPressable key={item.id} style={{
+              flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 13,
+              borderBottomWidth: 0.5, borderBottomColor: appColors.divider }}>
               <View style={{ flex: 1, marginRight: 12 }}>
-                <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 14, color: colors.ink }} numberOfLines={1}>{item.name}</Text>
-                <Text style={{ fontFamily: "Inter_400Regular", fontSize: 12, color: colors.stone, marginTop: 2 }}>
+                <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 13, color: appColors.text }} numberOfLines={1}>{item.name}</Text>
+                <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 11, color: appColors.textSoft, marginTop: 2 }}>
                   {item.brand ?? "USDA, 2024"} · per 100 g
                 </Text>
               </View>
               <View style={{ alignItems: "flex-end", marginRight: 10 }}>
-                <Text style={{ fontFamily: "Inter_700Bold", fontSize: 13, color: colors.ink }}>
-                  {item.kcalPer100g}{" "}<Text style={{ fontFamily: "Inter_400Regular", color: colors.stone, fontSize: 11 }}>kcal</Text>
+                <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 12, color: appColors.text }}>
+                  {item.kcalPer100g}{" "}<Text style={{ fontFamily: "PublicSans_400Regular", color: appColors.textSoft, fontSize: 10 }}>kcal</Text>
                 </Text>
-                <Text style={{ fontFamily: "Inter_400Regular", fontSize: 11, color: colors.stone, marginTop: 2 }}>
+                <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 10, color: appColors.textSoft, marginTop: 2 }}>
                   P {item.proteinPer100g}g · C {item.carbsPer100g}g · F {item.fatPer100g}g
                 </Text>
               </View>
-              <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: colors.forest,
+              <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: appColors.fat,
                 alignItems: "center", justifyContent: "center" }}>
-                <Ionicons name="add" size={18} color={colors.white} />
+                <Ionicons name="add" size={16} color={appColors.inkText} />
               </View>
-            </Pressable>
+            </AnimatedPressable>
           ))}
         </View>
       ) : query.length === 0 ? (
-        <View style={{ paddingVertical: 56, alignItems: "center", gap: 12, paddingHorizontal: 40 }}>
-          <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: `${colors.forest}15`,
-            alignItems: "center", justifyContent: "center" }}>
-            <Ionicons name="nutrition-outline" size={32} color={colors.forest} />
+        <View style={{ alignItems: "center", padding: 30, paddingTop: 34 }}>
+          <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: appColors.inkRaised,
+            alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+            <Ionicons name="nutrition-outline" size={22} color={appColors.fat} />
           </View>
-          <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 16, color: colors.ink, textAlign: "center" }}>
+          <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 14, color: appColors.onInk, marginBottom: 6 }}>
             Add foods to your plan
           </Text>
-          <Text style={{ fontFamily: "Inter_400Regular", fontSize: 14, color: colors.stone, textAlign: "center", lineHeight: 20 }}>
-            Search the USDA database and your saved foods to build your daily meal plan
+          <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 12, color: appColors.onInkSoft, textAlign: "center", lineHeight: 18 }}>
+            Search the USDA database and your saved foods to build today's plan.
           </Text>
         </View>
       ) : null}
@@ -464,17 +463,7 @@ function RecipesTab({ onSelect }: { onSelect: (r: DR) => void }) {
 
   return (
     <View>
-      <View style={{ paddingHorizontal: 20, marginBottom: 16 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10,
-          backgroundColor: colors.white, borderRadius: 16, paddingHorizontal: 16, height: 50,
-          shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 1 }}>
-          <Ionicons name="search-outline" size={18} color={colors.stone} />
-          <TextInput value={search} onChangeText={setSearch} placeholder="Search by name, cuisine or tag…"
-            placeholderTextColor={`${colors.stone}80`}
-            style={{ flex: 1, fontFamily: "Inter_400Regular", fontSize: 15, color: colors.ink }} />
-          {loading && <ActivityIndicator size="small" color={colors.sage} />}
-        </View>
-      </View>
+      <SearchBar value={search} onChangeText={setSearch} placeholder="Search by name, cuisine or tag…" loading={loading} />
       <View style={{ paddingHorizontal: 20 }}>
         {chunk(display, 2).map((row, i) => (
           <View key={i} style={{ flexDirection: "row", gap: 12, marginBottom: 12 }}>
@@ -538,8 +527,8 @@ function EquivalentsTab({ onSelect }: { onSelect: (r: DR) => void }) {
 
   if (loading) return (
     <View style={{ paddingVertical: 60, alignItems: "center", gap: 12 }}>
-      <ActivityIndicator size="large" color={colors.forest} />
-      <Text style={{ fontFamily: "Inter_400Regular", fontSize: 14, color: colors.stone }}>
+      <ActivityIndicator size="large" color={appColors.fat} />
+      <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 13, color: appColors.onInkSoft }}>
         Finding alternatives via Spoonacular…
       </Text>
     </View>
@@ -552,61 +541,58 @@ function EquivalentsTab({ onSelect }: { onSelect: (r: DR) => void }) {
         return (
           <View key={meal.id}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.clay }} />
-              <Text style={{ fontFamily: "Inter_700Bold", fontSize: 14, color: colors.ink }}>{meal.meal_type}</Text>
-              <Text style={{ fontFamily: "Inter_400Regular", fontSize: 14, color: colors.stone }}>— {meal.name}</Text>
+              <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: appColors.carb }} />
+              <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 14, color: appColors.onInk }}>{meal.meal_type}</Text>
+              <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 14, color: appColors.onInkSoft }}>— {meal.name}</Text>
             </View>
-            <View style={{ backgroundColor: `${colors.clay}10`, borderRadius: 14, padding: 14, marginBottom: 10,
-              borderLeftWidth: 3, borderLeftColor: colors.clay }}>
+            <View style={{ backgroundColor: appColors.inkRaised, borderRadius: 14, padding: 14, marginBottom: 10,
+              borderLeftWidth: 3, borderLeftColor: appColors.carb }}>
               <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 13, color: colors.ink }}>Assigned meal</Text>
-                <Text style={{ fontFamily: "Inter_700Bold", fontSize: 13, color: colors.clay }}>{meal.kcal} kcal</Text>
+                <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 13, color: appColors.onInk }}>Assigned meal</Text>
+                <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 13, color: appColors.carb }}>{meal.kcal} kcal</Text>
               </View>
-              <Text style={{ fontFamily: "Inter_400Regular", fontSize: 12, color: colors.stone, marginTop: 4 }}>
+              <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 12, color: appColors.onInkSoft, marginTop: 4 }}>
                 P {meal.protein_g}g · C {meal.carbs_g}g · F {meal.fat_g}g
               </Text>
             </View>
-            <Text style={{ fontFamily: "Inter_500Medium", fontSize: 11, color: colors.stone,
+            <Text style={{ fontFamily: "PublicSans_500Medium", fontSize: 11, color: appColors.onInkSoft,
               marginBottom: 8, letterSpacing: 0.6, textTransform: "uppercase" }}>
               Equivalent alternatives
             </Text>
             <View style={{ gap: 8 }}>
               {alts.map((alt) => {
-                const hue = CUISINE_HUE[alt.cuisine] ?? colors.sage;
+                const hue = CUISINE_HUE[alt.cuisine] ?? appColors.fat;
                 return (
-                  <Pressable key={alt.id} onPress={() => onSelect(alt)}
-                    style={({ pressed }) => ({ backgroundColor: colors.white, borderRadius: 14,
-                      overflow: "hidden", opacity: pressed ? 0.88 : 1,
-                      shadowColor: "#000", shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: 0.05, shadowRadius: 6, elevation: 1 })}>
+                  <AnimatedPressable key={alt.id} onPress={() => onSelect(alt)}
+                    style={{ backgroundColor: appColors.paper, borderRadius: 14, overflow: "hidden" }}>
                     {alt.thumbnail && (
                       <Image source={{ uri: alt.thumbnail }} style={{ width: "100%", height: 70 }} resizeMode="cover" />
                     )}
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 12 }}>
                       {!alt.thumbnail && (
-                        <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: `${hue}20`,
+                        <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: `${hue}25`,
                           alignItems: "center", justifyContent: "center", marginRight: 12 }}>
                           <Ionicons name="restaurant" size={18} color={hue} />
                         </View>
                       )}
                       <View style={{ flex: 1 }}>
-                        <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 13, color: colors.ink }} numberOfLines={1}>
+                        <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 13, color: appColors.text }} numberOfLines={1}>
                           {alt.name}
                         </Text>
-                        <Text style={{ fontFamily: "Inter_400Regular", fontSize: 11, color: colors.stone, marginTop: 2 }}>
+                        <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 11, color: appColors.textSoft, marginTop: 2 }}>
                           {alt.cuisine}{alt.kcal > 0 ? ` · P ${alt.protein_g}g · C ${alt.carbs_g}g · F ${alt.fat_g}g` : ""}
                         </Text>
                       </View>
                       {alt.kcal > 0 ? (
                         <View style={{ alignItems: "flex-end", marginLeft: 8 }}>
-                          <Text style={{ fontFamily: "Inter_700Bold", fontSize: 13, color: colors.ink }}>{alt.kcal}</Text>
-                          <Text style={{ fontFamily: "Inter_400Regular", fontSize: 11, color: colors.stone }}>kcal</Text>
+                          <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 13, color: appColors.text }}>{alt.kcal}</Text>
+                          <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 10, color: appColors.textSoft }}>kcal</Text>
                         </View>
                       ) : (
-                        <Ionicons name="chevron-forward" size={16} color={colors.stone} />
+                        <Ionicons name="chevron-forward" size={16} color="#8A8874" />
                       )}
                     </View>
-                  </Pressable>
+                  </AnimatedPressable>
                 );
               })}
             </View>
@@ -656,77 +642,65 @@ function TemplatesTab() {
 
   return (
     <View>
-      <View style={{ paddingHorizontal: 20, marginBottom: 16 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10,
-          backgroundColor: colors.white, borderRadius: 16, paddingHorizontal: 16, height: 50,
-          shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 1 }}>
-          <Ionicons name="search-outline" size={18} color={colors.stone} />
-          <TextInput value={search} onChangeText={setSearch} placeholder="Search meal plan templates…"
-            placeholderTextColor={`${colors.stone}80`}
-            style={{ flex: 1, fontFamily: "Inter_400Regular", fontSize: 15, color: colors.ink }} />
-        </View>
-      </View>
+      <SearchBar value={search} onChangeText={setSearch} placeholder="Search meal plan templates…" />
       <View style={{ marginHorizontal: 20, gap: 12 }}>
         {filtered.map((t) => {
           const plan = genPlans.get(t.id);
           return (
-            <View key={t.id} style={{ backgroundColor: colors.white, borderRadius: 18, overflow: "hidden",
-              shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 12, elevation: 2 }}>
-              <View style={{ flexDirection: "row", alignItems: "center", padding: 18 }}>
+            <View key={t.id} style={{ backgroundColor: appColors.paper, borderRadius: 16, overflow: "hidden" }}>
+              <View style={{ flexDirection: "row", alignItems: "center", padding: 16 }}>
                 <View style={{ flex: 1, marginRight: 12 }}>
-                  <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 14, color: colors.ink, marginBottom: 3 }}>{t.name}</Text>
-                  <Text style={{ fontFamily: "Inter_400Regular", fontSize: 12, color: colors.stone, marginBottom: 8 }} numberOfLines={1}>
+                  <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 14, color: appColors.text, marginBottom: 4 }}>{t.name}</Text>
+                  <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 11, color: "#8A8874", marginBottom: 8, lineHeight: 16 }} numberOfLines={2}>
                     {t.description}
                   </Text>
                   <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 4 }}>
                     {t.tags.map((tag) => (
-                      <View key={tag} style={{ borderRadius: 6, paddingHorizontal: 7, paddingVertical: 3,
-                        backgroundColor: `${TAG_COLOR[tag] ?? colors.sage}20` }}>
-                        <Text style={{ fontFamily: "Inter_500Medium", fontSize: 10, color: TAG_COLOR[tag] ?? colors.sage }}>{tag}</Text>
+                      <View key={tag} style={{ borderRadius: 999, paddingHorizontal: 8, paddingVertical: 3,
+                        backgroundColor: `${TAG_COLOR[tag] ?? appColors.fat}20` }}>
+                        <Text style={{ fontFamily: "PublicSans_500Medium", fontSize: 9, color: TAG_COLOR[tag] ?? appColors.fat }}>{tag}</Text>
                       </View>
                     ))}
                   </View>
                 </View>
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={{ fontFamily: "Fraunces_700Bold", fontSize: 16, color: colors.ink }}>{t.kcal.toLocaleString()}</Text>
-                  <Text style={{ fontFamily: "Inter_400Regular", fontSize: 11, color: colors.stone, marginBottom: 6 }}>kcal</Text>
-                  <Text style={{ fontFamily: "Inter_400Regular", fontSize: 10, color: macroColors.fat }}>{t.fatPct}% Fat</Text>
-                  <Text style={{ fontFamily: "Inter_400Regular", fontSize: 10, color: macroColors.carbs }}>{t.carbsPct}% Carbs</Text>
-                  <Text style={{ fontFamily: "Inter_400Regular", fontSize: 10, color: macroColors.protein }}>{t.proteinPct}% Protein</Text>
+                <View style={{ alignItems: "flex-end", minWidth: 46 }}>
+                  <Text style={{ fontFamily: "Fraunces_600SemiBold", fontSize: 15, color: appColors.text }}>{t.kcal.toLocaleString()}</Text>
+                  <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 9, color: "#8A8874" }}>kcal</Text>
                 </View>
               </View>
 
-              <Pressable onPress={() => !loadingId && handleGenerate(t.id, t.kcal, t.tags)}
-                style={({ pressed }) => ({
+              <AnimatedPressable onPress={() => !loadingId && handleGenerate(t.id, t.kcal, t.tags)}
+                style={{
                   flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
-                  paddingVertical: 14, borderTopWidth: 1, borderTopColor: "#F0EDE6",
-                  backgroundColor: plan ? `${colors.forest}08` : "transparent",
-                  opacity: pressed || (loadingId !== null && loadingId !== t.id) ? 0.5 : 1 })}>
+                  paddingVertical: 12, marginHorizontal: 14, marginBottom: 14, borderRadius: 999,
+                  borderWidth: plan ? 0 : 0.5, borderColor: appColors.border,
+                  backgroundColor: plan ? appColors.paperDim : "transparent",
+                  opacity: loadingId !== null && loadingId !== t.id ? 0.5 : 1 }}>
                 {loadingId === t.id ? (
-                  <><ActivityIndicator size="small" color={colors.forest} />
-                  <Text style={{ fontFamily: "Inter_500Medium", fontSize: 13, color: colors.forest }}>Generating…</Text></>
+                  <><ActivityIndicator size="small" color={appColors.fat} />
+                  <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 12, color: appColors.text }}>Generating…</Text></>
                 ) : (
-                  <><Ionicons name={plan ? "refresh-outline" : "sparkles-outline"} size={16} color={colors.forest} />
-                  <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 13, color: colors.forest }}>
-                    {plan ? "Regenerate Plan" : "Generate Plan"}
+                  <><Ionicons name={plan ? "refresh-outline" : "sparkles-outline"} size={14} color={appColors.text} />
+                  <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 12, color: appColors.text }}>
+                    {plan ? "Regenerate plan" : "Generate plan"}
                   </Text></>
                 )}
-              </Pressable>
+              </AnimatedPressable>
 
               {plan && (
-                <View style={{ borderTopWidth: 1, borderTopColor: "#F0EDE6", padding: 16, gap: 8 }}>
-                  <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 11, color: colors.stone,
+                <View style={{ borderTopWidth: 1, borderStyle: "dashed", borderTopColor: appColors.border, padding: 16, gap: 8 }}>
+                  <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 10, color: "#8A8874",
                     letterSpacing: 0.4, textTransform: "uppercase", marginBottom: 4 }}>
                     Today's meals · {Math.round(plan.nutrients.calories)} kcal
                   </Text>
                   {plan.meals.map((m, i) => (
                     <View key={i} style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                      <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.forest }} />
-                      <Text style={{ flex: 1, fontFamily: "Inter_500Medium", fontSize: 13, color: colors.ink }}>{m.title}</Text>
-                      <Text style={{ fontFamily: "Inter_400Regular", fontSize: 11, color: colors.stone }}>{m.readyInMinutes} min</Text>
+                      <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: appColors.fat }} />
+                      <Text style={{ flex: 1, fontFamily: "PublicSans_500Medium", fontSize: 13, color: appColors.text }}>{m.title}</Text>
+                      <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 11, color: "#8A8874" }}>{m.readyInMinutes} min</Text>
                     </View>
                   ))}
-                  <Text style={{ fontFamily: "Inter_400Regular", fontSize: 11, color: colors.stone, marginTop: 4 }}>
+                  <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 11, color: "#8A8874", marginTop: 4 }}>
                     P {Math.round(plan.nutrients.protein)}g · C {Math.round(plan.nutrients.carbohydrates)}g · F {Math.round(plan.nutrients.fat)}g
                   </Text>
                 </View>
@@ -745,39 +719,45 @@ export default function MealsScreen() {
   const [selectedRecipe, setSelected]   = useState<DR | null>(null);
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.linen }}>
+    <LinearGradient colors={appGradient.shell} style={{ flex: 1 }}>
       <View style={{ paddingTop: 60, paddingHorizontal: 20, paddingBottom: 16 }}>
-        <Text style={{ fontFamily: "Fraunces_700Bold", fontSize: 36, color: colors.ink }}>Meal Plan</Text>
-        <Text style={{ fontFamily: "Inter_400Regular", fontSize: 14, color: colors.stone, marginTop: 4 }}>
+        <Text style={{ fontFamily: "Fraunces_600SemiBold", fontSize: 28, color: appColors.onInk }}>Meal plan</Text>
+        <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 13, color: appColors.onInkSoft, marginTop: 4 }}>
           Build, explore and swap your meals
         </Text>
       </View>
 
-      <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
-        <View style={{ flexDirection: "row", backgroundColor: colors.white, borderRadius: 14, padding: 4,
-          shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }}>
+      <View style={{ paddingHorizontal: 20, marginBottom: 18 }}>
+        <View style={{ flexDirection: "row", backgroundColor: appColors.inkRaised, borderRadius: 999, padding: 4 }}>
           {PLAN_TABS.map((tab) => (
-            <Pressable key={tab} onPress={() => setActiveTab(tab)}
-              style={{ flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: "center",
-                backgroundColor: activeTab === tab ? colors.forest : "transparent" }}>
-              <Text style={{ fontFamily: activeTab === tab ? "Inter_600SemiBold" : "Inter_400Regular",
-                fontSize: 12, color: activeTab === tab ? colors.white : colors.stone }}>
+            <AnimatedPressable key={tab} onPress={() => setActiveTab(tab)} scaleTo={0.94}
+              style={{ flex: 1, paddingVertical: 8, borderRadius: 999, alignItems: "center" }}>
+              <MotiView
+                animate={{ opacity: activeTab === tab ? 1 : 0 }}
+                transition={{ type: "timing", duration: 180 }}
+                style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: 999, backgroundColor: appColors.paper }}
+              />
+              <Text style={{ fontFamily: activeTab === tab ? "PublicSans_600SemiBold" : "PublicSans_400Regular",
+                fontSize: 11, color: activeTab === tab ? appColors.text : appColors.onInkSoft }}>
                 {tab}
               </Text>
-            </Pressable>
+            </AnimatedPressable>
           ))}
         </View>
       </View>
 
       <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}>
-        {activeTab === "Foods"       && <FoodsTab />}
-        {activeTab === "Recipes"     && <RecipesTab onSelect={setSelected} />}
-        {activeTab === "Equivalents" && <EquivalentsTab onSelect={setSelected} />}
-        {activeTab === "Templates"   && <TemplatesTab />}
+        contentContainerStyle={{ paddingBottom: 140 }}>
+        <MotiView key={activeTab} from={{ opacity: 0, translateY: 6 }} animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: "timing", duration: 220 }}>
+          {activeTab === "Foods"       && <FoodsTab />}
+          {activeTab === "Recipes"     && <RecipesTab onSelect={setSelected} />}
+          {activeTab === "Equivalents" && <EquivalentsTab onSelect={setSelected} />}
+          {activeTab === "Templates"   && <TemplatesTab />}
+        </MotiView>
       </ScrollView>
 
       <RecipeDetailModal recipe={selectedRecipe} onClose={() => setSelected(null)} />
-    </View>
+    </LinearGradient>
   );
 }

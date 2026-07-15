@@ -1,10 +1,12 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSession } from "@/lib/auth/useSession";
 import { setPendingRole } from "@/lib/auth/pendingRole";
-import { colors } from "@/lib/tokens";
+import { appColors, appGradient } from "@/lib/tokens";
+import { AnimatedPressable } from "@/components/ui/AnimatedPressable";
 
 export default function RoleSelectionScreen() {
   const { session, loading } = useSession();
@@ -21,13 +23,14 @@ export default function RoleSelectionScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.linen }}>
+    <LinearGradient colors={appGradient.shell} style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 56 }}>
         <Text
           style={{
-            fontFamily: "Fraunces_700Bold",
-            fontSize: 38,
-            color: colors.ink,
+            fontFamily: "Fraunces_600SemiBold",
+            fontSize: 32,
+            color: appColors.onInk,
             textAlign: "center",
             marginBottom: 8,
           }}
@@ -36,35 +39,36 @@ export default function RoleSelectionScreen() {
         </Text>
         <Text
           style={{
-            fontFamily: "Inter_400Regular",
-            fontSize: 16,
-            color: colors.stone,
+            fontFamily: "PublicSans_400Regular",
+            fontSize: 15,
+            color: appColors.onInkSoft,
             textAlign: "center",
-            marginBottom: 52,
+            marginBottom: 44,
           }}
         >
           Tell us how you'll use Nutrition Wize
         </Text>
 
         <RoleCard
-          icon="person-outline"
-          iconBg={colors.sage + "25"}
-          iconColor={colors.forest}
-          title="I'm a Patient"
-          description="Track your nutrition and work toward your health goals"
+          icon="restaurant-outline"
+          iconBg="#E3ECD9"
+          iconColor="#4A6B3D"
+          title="I'm a patient"
+          description="Track meals and work toward your goals"
           onPress={() => handleRole("patient")}
         />
 
         <RoleCard
-          icon="briefcase-outline"
-          iconBg={colors.clay + "18"}
-          iconColor={colors.clay}
-          title="I'm a Dietitian"
-          description="Access your professional dashboard and manage patients"
+          icon="clipboard-outline"
+          iconBg="#F5E2D6"
+          iconColor="#A9532C"
+          title="I'm a dietitian"
+          description="Manage your patients' plans and progress"
           onPress={() => handleRole("dietitian")}
         />
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
@@ -84,58 +88,53 @@ function RoleCard({
   onPress: () => void;
 }) {
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={onPress}
-      style={({ pressed }) => ({
-        backgroundColor: pressed ? "#f0ede5" : colors.white,
+      style={{
+        backgroundColor: appColors.paper,
         borderRadius: 16,
-        padding: 20,
-        marginBottom: 16,
+        padding: 16,
+        marginBottom: 12,
         flexDirection: "row",
         alignItems: "center",
-        shadowColor: colors.ink,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.07,
-        shadowRadius: 8,
-        elevation: 3,
-      })}
+      }}
     >
       <View
         style={{
-          width: 52,
-          height: 52,
-          borderRadius: 26,
+          width: 44,
+          height: 44,
+          borderRadius: 22,
           backgroundColor: iconBg,
           alignItems: "center",
           justifyContent: "center",
-          marginRight: 16,
+          marginRight: 14,
         }}
       >
-        <Ionicons name={icon as any} size={26} color={iconColor} />
+        <Ionicons name={icon as any} size={20} color={iconColor} />
       </View>
       <View style={{ flex: 1 }}>
         <Text
           style={{
-            fontFamily: "Inter_700Bold",
-            fontSize: 17,
-            color: colors.ink,
-            marginBottom: 3,
+            fontFamily: "PublicSans_600SemiBold",
+            fontSize: 15,
+            color: appColors.text,
+            marginBottom: 2,
           }}
         >
           {title}
         </Text>
         <Text
           style={{
-            fontFamily: "Inter_400Regular",
-            fontSize: 13,
-            color: colors.stone,
-            lineHeight: 18,
+            fontFamily: "PublicSans_400Regular",
+            fontSize: 12,
+            color: appColors.textSoft,
+            lineHeight: 17,
           }}
         >
           {description}
         </Text>
       </View>
-      <Ionicons name="chevron-forward" size={18} color={colors.stone} style={{ marginLeft: 8 }} />
-    </Pressable>
+      <Ionicons name="chevron-forward" size={18} color="#8A8874" />
+    </AnimatedPressable>
   );
 }
