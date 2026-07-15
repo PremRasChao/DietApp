@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { Linking, Pressable, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { mockServices } from "@/lib/mockData";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
@@ -19,7 +19,8 @@ function ServiceCard({ service, index }: { service: typeof mockServices[0]; inde
   const accent = index % 2 === 0 ? colors.tan : colors.espresso;
 
   return (
-    <View
+    <Pressable
+      onPress={() => Linking.openURL(service.url)}
       style={{
         backgroundColor: colors.cream,
         borderRadius: 22,
@@ -60,7 +61,7 @@ function ServiceCard({ service, index }: { service: typeof mockServices[0]; inde
         </Text>
         <Ionicons name="arrow-forward" size={13} color={accent} />
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -86,10 +87,10 @@ export function ServicesGrid() {
             </Text>
           </View>
           <Text style={{ fontFamily: "Fraunces_700Bold", fontSize: isMd ? 42 : 32, color: colors.espresso }}>
-            Specialised care for{"\n"}every nutrition goal
+            From gut health to diabetes care,{"\n"}women's health, and more
           </Text>
           <Text style={{ fontFamily: "Inter_400Regular", fontSize: 16, color: colors.taupe, lineHeight: 26, marginTop: 12, maxWidth: 480 }}>
-            Our Registered Dietitians cover the full spectrum of nutrition needs — from weight management to eating disorder support.
+            You name it, we've got it. Nutritionwize offers assessments, follow-ups, body composition testing, and education programs.
           </Text>
         </View>
 

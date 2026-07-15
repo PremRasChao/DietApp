@@ -1,4 +1,4 @@
-# Nutrition Wize — Claude Session Handoff
+# Nutritionwize — Claude Session Handoff
 
 **Last updated:** 2026-07-14  
 **Current branch:** `feature/meals-tab-recipes`  
@@ -9,7 +9,7 @@
 
 ## What this app is
 
-**Nutrition Wize** is a React Native / Expo app for a GTA-based dietitian service. It has three parts:
+**Nutritionwize** is a React Native / Expo app for a GTA-based dietitian service. It has three parts:
 
 1. **Marketing site** (`app/(marketing)/`) — landing page for the business, Nutrium-inspired premium SaaS aesthetic
 2. **Auth flow** (`app/(auth)/`) — role selection, patient sign-in, dietitian verification + sign-in

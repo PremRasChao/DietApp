@@ -86,7 +86,7 @@ export function TestimonialsRow() {
           What our clients say
         </Text>
         <Text style={{ fontFamily: "Inter_400Regular", fontSize: 16, color: colors.taupe, lineHeight: 26, marginTop: 12, maxWidth: 440 }}>
-          Real results from real people, supported by evidence-based dietitian care.
+          Thousands of people have benefited from Nutritionwize programs, counselling, and practical meal planning.
         </Text>
       </View>
 

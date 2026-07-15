@@ -1,6 +1,6 @@
 import {
   View, Text, TextInput, ScrollView, Pressable,
-  ActivityIndicator, Image, Modal,
+  ActivityIndicator, Image, Modal, Platform, Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState, useEffect, useRef } from "react";
@@ -11,11 +11,17 @@ import { AnimatedPressable } from "@/components/ui/AnimatedPressable";
 import { searchFood, FoodResult } from "@/lib/food/openFoodFacts";
 import { searchLocal } from "@/lib/food/commonFoods";
 import {
-  searchRecipes, findEquivalents, generateMealPlan, getRecipeDetails,
+  searchRecipes, generateMealPlan, getRecipeDetails,
   SPOON_DIETS, SpoonRecipe, GeneratedPlan, RecipeDetails,
 } from "@/lib/food/spoonacular";
 import { searchMealDB, getRecipeDetailsByName, MealDBRecipe } from "@/lib/food/mealdb";
 import { mockRecipes, mockPlanMeals, mockMealTemplates, type PlanMeal } from "@/lib/mockData";
+import {
+  getUserRecipes, subscribe as subscribeUserRecipes, addUserRecipe, addUserRecipes,
+  parseRecipeSheet, SHEET_COLUMNS, type UserRecipe,
+} from "@/lib/mealPlan/userRecipes";
+import { useAuth } from "@/lib/auth/AuthContext";
+import { TemplateLibrary } from "@/components/dietitian/TemplateLibrary";
 
 const PLAN_TABS = ["Foods", "Recipes", "Equivalents", "Templates"] as const;
 type PlanTab = typeof PLAN_TABS[number];
@@ -28,7 +34,6 @@ type DR = {
   steps?: string[];
 };
 
-const equivCache = new Map<string, DR[]>();
 let featuredCache: DR[] = [];
 // null = not fetched yet; false = fetched but failed/unavailable
 const detailsCache = new Map<string, RecipeDetails | false>();
@@ -413,9 +418,164 @@ function FoodsTab() {
   );
 }
 
+// ── Bulk sheet upload (web file picker) ─────────────────────────────────────────
+function pickAndParseSheet(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    if (Platform.OS !== "web" || typeof document === "undefined") {
+      reject(new Error("Sheet upload is available on the web app."));
+      return;
+    }
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".xlsx,.xls,.csv";
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) { resolve(0); return; }
+      try {
+        const buf = await file.arrayBuffer();
+        const rows = parseRecipeSheet(buf);
+        if (!rows.length) { reject(new Error("No valid rows found. Check the column headers.")); return; }
+        resolve(addUserRecipes(rows));
+      } catch (e) {
+        reject(e instanceof Error ? e : new Error("Could not read that file."));
+      }
+    };
+    input.click();
+  });
+}
+
+// ── Manual add-recipe modal ─────────────────────────────────────────────────────
+function ManualRecipeModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const [name, setName]       = useState("");
+  const [cuisine, setCuisine] = useState("");
+  const [tags, setTags]       = useState("");
+  const [prepTime, setPrep]   = useState("");
+  const [kcal, setKcal]       = useState("");
+  const [protein, setProtein] = useState("");
+  const [carbs, setCarbs]     = useState("");
+  const [fat, setFat]         = useState("");
+
+  const reset = () => { setName(""); setCuisine(""); setTags(""); setPrep("");
+    setKcal(""); setProtein(""); setCarbs(""); setFat(""); };
+  const n = (v: string) => { const x = parseFloat(v); return Number.isFinite(x) ? x : 0; };
+
+  const save = () => {
+    if (!name.trim()) return;
+    addUserRecipe({
+      name: name.trim(),
+      cuisine: cuisine.trim() || "International",
+      tags: tags.split(/[,;]/).map((t) => t.trim()).filter(Boolean),
+      kcal: n(kcal), protein_g: n(protein), carbs_g: n(carbs), fat_g: n(fat),
+      prepTime: prepTime.trim() || "—",
+    });
+    reset();
+    onClose();
+  };
+
+  const field = (label: string, value: string, set: (v: string) => void, opts?: { keyboard?: "numeric"; flex?: number; placeholder?: string }) => (
+    <View style={{ flex: opts?.flex ?? 1, marginBottom: 12 }}>
+      <Text style={{ fontFamily: "PublicSans_500Medium", fontSize: 11, color: appColors.onInkSoft, marginBottom: 5 }}>{label}</Text>
+      <TextInput value={value} onChangeText={set} placeholder={opts?.placeholder}
+        placeholderTextColor="#8A8874"
+        keyboardType={opts?.keyboard === "numeric" ? "numeric" : "default"}
+        style={{ backgroundColor: appColors.inkRaised, borderRadius: 12, paddingHorizontal: 12,
+          paddingVertical: 10, fontFamily: "PublicSans_400Regular", fontSize: 13, color: appColors.onInk }} />
+    </View>
+  );
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "flex-end" }}>
+        <View style={{ backgroundColor: appColors.paper, borderTopLeftRadius: 24, borderTopRightRadius: 24, maxHeight: "88%" }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 20, paddingBottom: 8 }}>
+            <Text style={{ fontFamily: "Fraunces_600SemiBold", fontSize: 20, color: appColors.text }}>Add a recipe</Text>
+            <Pressable onPress={onClose} hitSlop={10}><Ionicons name="close" size={24} color={appColors.text} /></Pressable>
+          </View>
+          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}>
+            {field("Name*", name, setName, { placeholder: "Grilled salmon bowl" })}
+            <View style={{ flexDirection: "row", gap: 12 }}>
+              {field("Cuisine", cuisine, setCuisine, { placeholder: "Japanese" })}
+              {field("Prep time", prepTime, setPrep, { placeholder: "25 min" })}
+            </View>
+            {field("Tags (comma-separated)", tags, setTags, { placeholder: "High Protein, Balanced" })}
+            <View style={{ flexDirection: "row", gap: 12 }}>
+              {field("Calories", kcal, setKcal, { keyboard: "numeric", placeholder: "0" })}
+              {field("Protein (g)", protein, setProtein, { keyboard: "numeric", placeholder: "0" })}
+            </View>
+            <View style={{ flexDirection: "row", gap: 12 }}>
+              {field("Carbs (g)", carbs, setCarbs, { keyboard: "numeric", placeholder: "0" })}
+              {field("Fat (g)", fat, setFat, { keyboard: "numeric", placeholder: "0" })}
+            </View>
+            <AnimatedPressable onPress={save} scaleTo={0.97}
+              style={{ backgroundColor: name.trim() ? appColors.fat : appColors.inkRaised, borderRadius: 14,
+                paddingVertical: 14, alignItems: "center", marginTop: 8 }}>
+              <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 14, color: name.trim() ? appColors.paper : "#8A8874" }}>
+                Save recipe
+              </Text>
+            </AnimatedPressable>
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
 // ── Recipes sub-tab ────────────────────────────────────────────────────────────
+function useUserRecipes(): UserRecipe[] {
+  const [list, setList] = useState<UserRecipe[]>(getUserRecipes());
+  useEffect(() => subscribeUserRecipes(() => setList([...getUserRecipes()])), []);
+  return list;
+}
+
 function RecipesTab({ onSelect }: { onSelect: (r: DR) => void }) {
   const [search, setSearch]   = useState("");
+  const userRecipes = useUserRecipes();
+  const [showAdd, setShowAdd] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [genPlan, setGenPlan] = useState<GeneratedPlan | null>(null);
+  const [generating, setGenerating] = useState(false);
+
+  // Spoonacular meal-plan generation (same engine as the Templates tab).
+  const onGenerate = async () => {
+    setGenerating(true);
+    const kcal = 2000;
+    let plan = await generateMealPlan(kcal, "");
+    if (!plan) {
+      // Local fallback: 3 mock recipes closest to a per-meal calorie target.
+      const perMeal = kcal / 3;
+      const picked = [...mockRecipes]
+        .sort((a, b) => Math.abs(a.kcal - perMeal) - Math.abs(b.kcal - perMeal))
+        .slice(0, 3);
+      plan = {
+        meals: picked.map((r) => ({ title: r.name, readyInMinutes: parseInt(r.prepTime) || 30 })),
+        nutrients: {
+          calories: picked.reduce((s, r) => s + r.kcal, 0),
+          protein:  picked.reduce((s, r) => s + r.protein_g, 0),
+          fat:      picked.reduce((s, r) => s + r.fat_g, 0),
+          carbohydrates: picked.reduce((s, r) => s + r.carbs_g, 0),
+        },
+      };
+    }
+    setGenPlan(plan);
+    setGenerating(false);
+  };
+
+  const onUpload = async () => {
+    setUploading(true);
+    try {
+      const count = await pickAndParseSheet();
+      if (count > 0 && Platform.OS === "web") {
+        // eslint-disable-next-line no-alert
+        window.alert(`Added ${count} recipe${count === 1 ? "" : "s"} from the sheet.`);
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Upload failed.";
+      if (Platform.OS === "web") window.alert(msg); else Alert.alert("Upload", msg);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const [featured, setFeatured] = useState<DR[]>(
     featuredCache.length
       ? featuredCache
@@ -459,11 +619,80 @@ function RecipesTab({ onSelect }: { onSelect: (r: DR) => void }) {
     }, 400);
   }, [search]);
 
-  const display = search.length >= 2 ? liveResults : featured;
+  const q = search.toLowerCase();
+  const matchedUser = search.length >= 2
+    ? userRecipes.filter((r) =>
+        r.name.toLowerCase().includes(q) || r.cuisine.toLowerCase().includes(q) ||
+        r.tags.some((t) => t.toLowerCase().includes(q)))
+    : userRecipes;
+  const display: DR[] = search.length >= 2
+    ? [...matchedUser, ...liveResults]
+    : [...userRecipes, ...featured];
 
   return (
     <View>
       <SearchBar value={search} onChangeText={setSearch} placeholder="Search by name, cuisine or tag…" loading={loading} />
+
+      <View style={{ flexDirection: "row", gap: 10, paddingHorizontal: 20, marginBottom: 14 }}>
+        <AnimatedPressable onPress={() => setShowAdd(true)} scaleTo={0.96}
+          style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6,
+            backgroundColor: appColors.fat, borderRadius: 12, paddingVertical: 11 }}>
+          <Ionicons name="add" size={16} color={appColors.paper} />
+          <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 12, color: appColors.paper }}>Add recipe</Text>
+        </AnimatedPressable>
+        <AnimatedPressable onPress={onUpload} scaleTo={0.96} disabled={uploading}
+          style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6,
+            backgroundColor: appColors.inkRaised, borderRadius: 12, paddingVertical: 11 }}>
+          {uploading
+            ? <ActivityIndicator size="small" color={appColors.onInk} />
+            : <Ionicons name="cloud-upload-outline" size={16} color={appColors.onInk} />}
+          <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 12, color: appColors.onInk }}>Upload sheet</Text>
+        </AnimatedPressable>
+      </View>
+      <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 10, color: appColors.onInkSoft,
+        paddingHorizontal: 20, marginBottom: 14 }}>
+        Sheet columns: {SHEET_COLUMNS.join(", ")} — only name is required.
+      </Text>
+
+      {/* Spoonacular meal-plan generator */}
+      <View style={{ paddingHorizontal: 20, marginBottom: 16 }}>
+        <AnimatedPressable onPress={() => !generating && onGenerate()} scaleTo={0.97}
+          style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
+            paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: appColors.fat,
+            backgroundColor: `${appColors.fat}0D` }}>
+          {generating ? (
+            <><ActivityIndicator size="small" color={appColors.fat} />
+            <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 13, color: appColors.fat }}>Generating…</Text></>
+          ) : (
+            <><Ionicons name={genPlan ? "refresh-outline" : "sparkles-outline"} size={15} color={appColors.fat} />
+            <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 13, color: appColors.fat }}>
+              {genPlan ? "Regenerate meal plan" : "Generate meal plan"}
+            </Text></>
+          )}
+        </AnimatedPressable>
+
+        {genPlan && (
+          <View style={{ backgroundColor: appColors.paper, borderRadius: 14, padding: 16, marginTop: 10, gap: 8 }}>
+            <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 10, color: "#8A8874",
+              letterSpacing: 0.4, textTransform: "uppercase", marginBottom: 4 }}>
+              Suggested day · {Math.round(genPlan.nutrients.calories)} kcal
+            </Text>
+            {genPlan.meals.map((m, i) => (
+              <View key={i} style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: appColors.fat }} />
+                <Text style={{ flex: 1, fontFamily: "PublicSans_500Medium", fontSize: 13, color: appColors.text }}>{m.title}</Text>
+                <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 11, color: "#8A8874" }}>{m.readyInMinutes} min</Text>
+              </View>
+            ))}
+            <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 11, color: "#8A8874", marginTop: 4 }}>
+              P {Math.round(genPlan.nutrients.protein)}g · C {Math.round(genPlan.nutrients.carbohydrates)}g · F {Math.round(genPlan.nutrients.fat)}g
+            </Text>
+          </View>
+        )}
+      </View>
+
+      <ManualRecipeModal visible={showAdd} onClose={() => setShowAdd(false)} />
+
       <View style={{ paddingHorizontal: 20 }}>
         {chunk(display, 2).map((row, i) => (
           <View key={i} style={{ flexDirection: "row", gap: 12, marginBottom: 12 }}>
@@ -488,56 +717,28 @@ function macroDist(meal: PlanMeal, r: { kcal: number; protein_g: number; carbs_g
     Math.abs(meal.fat_g - r.fat_g);
 }
 
+// The shared recipe pool the Equivalents tab draws from — the same recipes
+// shown in the Recipes tab (your added recipes first, then the featured/live
+// catalog). This is what connects the two tabs: equivalents ARE recipes, and
+// tapping one opens the same recipe detail.
+function recipePool(userRecipes: UserRecipe[]): DR[] {
+  return [
+    ...userRecipes,
+    ...(featuredCache.length ? featuredCache : mockRecipes.map((r) => ({ ...r, thumbnail: undefined }))),
+  ];
+}
+
 function EquivalentsTab({ onSelect }: { onSelect: (r: DR) => void }) {
-  const [results, setResults] = useState<Map<string, DR[]>>(new Map(equivCache));
-  const [loading, setLoading] = useState(equivCache.size === 0);
-
-  useEffect(() => {
-    if (equivCache.size > 0) return;
-    Promise.all(
-      mockPlanMeals.map(async (meal) => {
-        try {
-          const spoon = await findEquivalents(meal.kcal, meal.protein_g, meal.carbs_g, meal.fat_g);
-          const alts: DR[] = spoon.length ? spoon.map(spoonToDR)
-            : [...mockRecipes].sort((a, b) => macroDist(meal, a) - macroDist(meal, b))
-                .slice(0, 3).map((r) => ({ ...r, thumbnail: undefined }));
-          return { id: meal.id, alts };
-        } catch {
-          const alts = [...mockRecipes]
-            .sort((a, b) => macroDist(meal, a) - macroDist(meal, b))
-            .slice(0, 3).map((r) => ({ ...r, thumbnail: undefined }));
-          return { id: meal.id, alts };
-        }
-      })
-    ).then((all) => {
-      all.forEach(({ id, alts }) => equivCache.set(id, alts));
-      setResults(new Map(equivCache));
-      setLoading(false);
-    }).catch(() => {
-      mockPlanMeals.forEach((meal) => {
-        const alts = [...mockRecipes]
-          .sort((a, b) => macroDist(meal, a) - macroDist(meal, b))
-          .slice(0, 3).map((r) => ({ ...r, thumbnail: undefined }));
-        equivCache.set(meal.id, alts);
-      });
-      setResults(new Map(equivCache));
-      setLoading(false);
-    });
-  }, []);
-
-  if (loading) return (
-    <View style={{ paddingVertical: 60, alignItems: "center", gap: 12 }}>
-      <ActivityIndicator size="large" color={appColors.fat} />
-      <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 13, color: appColors.onInkSoft }}>
-        Finding alternatives via Spoonacular…
-      </Text>
-    </View>
-  );
+  const userRecipes = useUserRecipes();
+  const pool = recipePool(userRecipes);
 
   return (
     <View style={{ paddingHorizontal: 20, gap: 24 }}>
       {mockPlanMeals.map((meal) => {
-        const alts = results.get(meal.id) ?? [];
+        // Closest 3 recipes by macro distance — pulled straight from the pool.
+        const alts = [...pool]
+          .sort((a, b) => macroDist(meal, a) - macroDist(meal, b))
+          .slice(0, 3);
         return (
           <View key={meal.id}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 }}>
@@ -605,6 +806,13 @@ function EquivalentsTab({ onSelect }: { onSelect: (r: DR) => void }) {
 
 // ── Templates sub-tab ──────────────────────────────────────────────────────────
 function TemplatesTab() {
+  const { role } = useAuth();
+  // Dietitians get the practitioner template library + builder here.
+  if (role === "dietitian") return <TemplateLibrary />;
+  return <PatientTemplatesTab />;
+}
+
+function PatientTemplatesTab() {
   const [search, setSearch]       = useState("");
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [genPlans, setGenPlans]   = useState<Map<string, GeneratedPlan>>(new Map());

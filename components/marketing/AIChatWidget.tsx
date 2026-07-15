@@ -76,7 +76,7 @@ export function AIChatWidget() {
           >
             {/* Header */}
             <View style={{ backgroundColor: colors.espresso, padding: 16 }}>
-              <ThemedText variant="subheading" color="bone">Nutrition Wize AI</ThemedText>
+              <ThemedText variant="subheading" color="bone">Nutritionwize AI</ThemedText>
               <ThemedText variant="caption" color="taupe">Ask me anything about nutrition</ThemedText>
             </View>
 

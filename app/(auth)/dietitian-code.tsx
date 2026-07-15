@@ -13,11 +13,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/auth/AuthContext";
+import { TEMP_DIETITIAN_ID } from "@/lib/auth/devBypass";
 import { canAttempt, isLocked, recordAttempt, remaining } from "@/lib/auth/dietitianRateLimit";
 import { appColors, appGradient } from "@/lib/tokens";
 import { AnimatedPressable } from "@/components/ui/AnimatedPressable";
 
 export default function DietitianCodeScreen() {
+  const { startTempDietitian } = useAuth();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +30,13 @@ export default function DietitianCodeScreen() {
 
     if (!trimmed) {
       setError("Please enter your dietitian ID.");
+      return;
+    }
+
+    // Temporary demo access: bypass the RPC and drop into the dietitian shell.
+    if (trimmed.toLowerCase() === TEMP_DIETITIAN_ID.toLowerCase()) {
+      startTempDietitian();
+      router.replace("/(app)");
       return;
     }
     if (trimmed.length < 4 || trimmed.length > 32) {
@@ -128,7 +138,7 @@ export default function DietitianCodeScreen() {
               lineHeight: 21,
             }}
           >
-            Enter the unique ID provided to you by Nutrition Wize to verify your credentials.
+            Enter the unique ID provided to you by Nutritionwize to verify your credentials.
           </Text>
 
           <Text
@@ -202,19 +212,19 @@ export default function DietitianCodeScreen() {
               height: 52,
               borderRadius: 14,
               backgroundColor:
-                loading || isLocked() || !code.trim() ? appColors.inkRaised : appColors.fat,
+                loading || isLocked() || !code.trim() ? appColors.border : appColors.fat,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             {loading ? (
-              <ActivityIndicator color={appColors.onInk} />
+              <ActivityIndicator color={appColors.text} />
             ) : (
               <Text
                 style={{
                   fontFamily: "PublicSans_600SemiBold",
                   fontSize: 15,
-                  color: appColors.inkText,
+                  color: isLocked() || !code.trim() ? appColors.textSoft : appColors.inkText,
                 }}
               >
                 Verify ID
@@ -232,7 +242,7 @@ export default function DietitianCodeScreen() {
               lineHeight: 17,
             }}
           >
-            Don't have an ID? Contact your Nutrition Wize administrator.
+            Don't have an ID? Contact your Nutritionwize administrator.
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>

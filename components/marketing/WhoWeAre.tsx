@@ -29,7 +29,7 @@ export function WhoWeAre() {
             Who We Are
           </Text>
           <Text className="text-espresso text-base leading-relaxed mb-4">
-            Nutrition Wize is a team of registered dietitians committed to making
+            Nutritionwize is a team of registered dietitians committed to making
             evidence-based nutrition care accessible to every Canadian. Founded in
             Toronto, we now serve clients across 25+ Greater Toronto Area locations
             with in-person and virtual appointments.

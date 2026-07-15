@@ -24,6 +24,7 @@ import {
   PublicSans_700Bold,
 } from "@expo-google-fonts/public-sans";
 import { configureGoogleSignin } from "@/lib/auth/googleSignin";
+import { SessionProvider } from "@/lib/auth/AuthContext";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -49,15 +50,17 @@ export default function RootLayout() {
 
   // Render immediately — fonts enhance but don't block
   return (
-    <View style={{ flex: 1, backgroundColor: "#FAF8F5" }}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(marketing)" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(app)" />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="dark" />
-    </View>
+    <SessionProvider>
+      <View style={{ flex: 1, backgroundColor: "#FAF8F5" }}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(marketing)" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(app)" />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="dark" />
+      </View>
+    </SessionProvider>
   );
 }

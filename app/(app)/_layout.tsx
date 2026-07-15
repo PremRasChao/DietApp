@@ -2,13 +2,13 @@ import { ActivityIndicator } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, Tabs } from "expo-router";
 import { CustomTabBar } from "@/components/app/CustomTabBar";
-import { useSession } from "@/lib/auth/useSession";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { appColors, appGradient } from "@/lib/tokens";
 
 export default function AppLayout() {
-  const { session, loading } = useSession();
+  const { isLoggedIn, isLoading } = useAuth();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <LinearGradient colors={appGradient.shell} style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <ActivityIndicator size="large" color={appColors.fat} />
@@ -16,7 +16,7 @@ export default function AppLayout() {
     );
   }
 
-  if (!session) {
+  if (!isLoggedIn) {
     return <Redirect href="/(auth)" />;
   }
 

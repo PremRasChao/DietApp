@@ -1,25 +1,29 @@
 import { useState } from "react";
-import { View, Pressable } from "react-native";
+import { Linking, View, Pressable } from "react-native";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { Button } from "@/components/ui/Button";
 import { mockInsuranceProviders } from "@/lib/mockData";
+import { nutritionwizeLinks } from "@/lib/marketingLinks";
 
 export function InsuranceChecker() {
   const [selected, setSelected] = useState<string | null>(null);
   const [result, setResult] = useState(false);
 
   function handleCheck() {
-    if (selected) setResult(true);
+    if (selected) {
+      setResult(true);
+      Linking.openURL(nutritionwizeLinks.insurance);
+    }
   }
 
   return (
     <View className="py-16 px-6 bg-bone">
       <View className="max-w-xl mx-auto w-full">
         <ThemedText variant="heading" color="espresso" className="mb-2">
-          Check your insurance coverage
+          Check for Registered Dietitian coverage
         </ThemedText>
         <ThemedText variant="body" color="taupe" className="mb-8">
-          Most extended health plans cover registered dietitian visits. See yours in seconds.
+          Nutritionwize can offer direct billing to nearly all insurance companies. Select your provider to start the conversation.
         </ThemedText>
 
         <ThemedText variant="label" color="espresso" className="mb-3">
@@ -60,7 +64,7 @@ export function InsuranceChecker() {
               Great news — <ThemedText variant="body" color="espresso" className="font-semibold">{selected}</ThemedText> typically covers registered dietitian visits.
             </ThemedText>
             <ThemedText variant="caption" color="taupe" className="mt-2">
-              Coverage details vary by plan. Book a consultation and we'll verify your benefits.
+              Coverage details vary by plan. Book a free consultation and the team can help verify your benefits.
             </ThemedText>
           </View>
         )}

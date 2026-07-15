@@ -1,8 +1,9 @@
-import { View, FlatList } from "react-native";
+import { FlatList, Linking, View } from "react-native";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { mockDietitians } from "@/lib/mockData";
+import { nutritionwizeLinks } from "@/lib/marketingLinks";
 
 type Dietitian = (typeof mockDietitians)[number];
 
@@ -20,7 +21,13 @@ function DietitianCard({ item }: { item: Dietitian }) {
         {item.languages.join(", ")}
       </ThemedText>
       <View className="mt-4">
-        <Button label={`Book with ${item.name}`} variant="secondary" size="sm" fullWidth />
+        <Button
+          label={`Book with ${item.name}`}
+          variant="secondary"
+          size="sm"
+          onPress={() => Linking.openURL(nutritionwizeLinks.consultation)}
+          fullWidth
+        />
       </View>
     </Card>
   );
@@ -32,7 +39,7 @@ export function DietitianCarousel() {
       <View className="px-6 mb-8">
         <ThemedText variant="heading" color="espresso">Meet our dietitians</ThemedText>
         <ThemedText variant="body" color="taupe" className="mt-2">
-          Registered dietitians who understand your culture, language, and goals.
+          Led by Manmeet Behl, RD, CDE, NM, our Registered Dietitians offer clinical, community, and group counselling experience across Ontario.
         </ThemedText>
       </View>
       <FlatList

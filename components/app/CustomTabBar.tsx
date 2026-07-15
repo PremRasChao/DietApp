@@ -54,7 +54,7 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
             >
               {isLog ? (
                 <LinearGradient
-                  colors={appGradient.shell}
+                  colors={appGradient.accent}
                   style={{
                     width: 40, height: 40, borderRadius: 20,
                     alignItems: "center", justifyContent: "center",

@@ -46,7 +46,7 @@ export default function RoleSelectionScreen() {
             marginBottom: 44,
           }}
         >
-          Tell us how you'll use Nutrition Wize
+          Tell us how you'll use Nutritionwize
         </Text>
 
         <RoleCard

@@ -1,8 +1,9 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { colors, macroColors } from "@/lib/tokens";
 import { mockMeals, CALORIE_GOAL } from "@/lib/mockData";
+import { nutritionwizeLinks } from "@/lib/marketingLinks";
 
 // ── Inline app preview card (right column on desktop) ───────────────────────
 function AppPreviewCard() {
@@ -117,29 +118,30 @@ export function HeroSection() {
             }}>
               <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.clay }} />
               <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 11, letterSpacing: 1.5, color: colors.stone, textTransform: "uppercase" }}>
-                Registered Dietitians · Most Plans Accepted · GTA
+                Registered Dietitians · 25+ Ontario Locations
               </Text>
             </View>
 
             {/* Headline */}
             <Text style={{ fontFamily: "Fraunces_700Bold", fontSize: isMd ? 64 : 46, color: colors.ink, lineHeight: isMd ? 68 : 50, marginBottom: 0 }}>
-              Real nutrition
+              Expert diet
             </Text>
             <Text style={{ fontFamily: "Fraunces_700Bold", fontSize: isMd ? 64 : 46, color: colors.ink, lineHeight: isMd ? 68 : 50 }}>
-              guidance,
+              therapy for
             </Text>
             <Text style={{ fontFamily: "Fraunces_700Bold_Italic", fontSize: isMd ? 64 : 46, color: colors.clay, lineHeight: isMd ? 78 : 60, marginBottom: 28 }}>
-              rooted in you.
+              everyday health.
             </Text>
 
             {/* Sub */}
             <Text style={{ fontFamily: "Inter_400Regular", fontSize: isMd ? 17 : 15, color: colors.stone, lineHeight: 26, maxWidth: 520, marginBottom: 40 }}>
-              Get matched with a Registered Dietitian who understands your culture, your schedule, and your goals — then start with sessions covered by most extended health plans across the GTA.
+              Nutritionwize Registered Dietitians and Certified Diabetes Educators help individuals and families make informed, practical, and sustainable nutrition choices.
             </Text>
 
             {/* CTAs */}
             <View style={{ flexDirection: "row", gap: 12, flexWrap: "wrap", marginBottom: 40 }}>
               <Pressable
+                onPress={() => Linking.openURL(nutritionwizeLinks.consultation)}
                 style={({ pressed }) => ({
                   flexDirection: "row", alignItems: "center", gap: 8,
                   paddingHorizontal: 24, paddingVertical: 15, borderRadius: 14,
@@ -149,17 +151,18 @@ export function HeroSection() {
                   elevation: 5,
                 })}
               >
-                <Text style={{ fontFamily: "Inter_700Bold", fontSize: 15, color: colors.white }}>Match me with a dietitian</Text>
+                <Text style={{ fontFamily: "Inter_700Bold", fontSize: 15, color: colors.white }}>Request a free consultation</Text>
                 <Ionicons name="arrow-forward" size={15} color={colors.white} />
               </Pressable>
               <Pressable
+                onPress={() => Linking.openURL(nutritionwizeLinks.insurance)}
                 style={({ pressed }) => ({
                   paddingHorizontal: 24, paddingVertical: 15, borderRadius: 14,
                   borderWidth: 1.5, borderColor: "#D8D3C8", opacity: pressed ? 0.7 : 1,
                   backgroundColor: colors.white,
                 })}
               >
-                <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 15, color: colors.ink }}>See if I'm covered</Text>
+                <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 15, color: colors.ink }}>Check insurance coverage</Text>
               </Pressable>
             </View>
 
@@ -185,7 +188,7 @@ export function HeroSection() {
                   ))}
                 </View>
                 <Text style={{ fontFamily: "Inter_400Regular", fontSize: 12, color: colors.stone }}>
-                  Trusted by <Text style={{ fontFamily: "Inter_700Bold", color: colors.ink }}>1,200+ clients</Text> across the GTA · most major insurers accepted
+                  <Text style={{ fontFamily: "Inter_700Bold", color: colors.ink }}>20,000+ lives impacted</Text> · 15+ languages spoken · direct billing available
                 </Text>
               </View>
             </View>

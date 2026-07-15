@@ -1,9 +1,16 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { colors } from "@/lib/tokens";
+import { nutritionwizeLinks } from "@/lib/marketingLinks";
 
-const NAV_LINKS = ["About", "Services", "Dietitians", "Blog", "Shop"];
+const NAV_LINKS = [
+  { label: "About", url: nutritionwizeLinks.about },
+  { label: "Services", url: nutritionwizeLinks.services },
+  { label: "Insurance", url: nutritionwizeLinks.insurance },
+  { label: "Blog", url: nutritionwizeLinks.blog },
+  { label: "Contact", url: nutritionwizeLinks.contact },
+];
 
 export function NavBar() {
   const { isMd } = useBreakpoint();
@@ -45,7 +52,7 @@ export function NavBar() {
             <Text style={{ fontFamily: "Fraunces_700Bold", fontSize: 18, color: colors.tan }}>N</Text>
           </View>
           <Text style={{ fontFamily: "Fraunces_700Bold", fontSize: 20, color: colors.espresso }}>
-            Nutrition Wize
+            Nutritionwize
           </Text>
         </View>
 
@@ -54,14 +61,15 @@ export function NavBar() {
           <View style={{ flex: 2, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 4 }}>
             {NAV_LINKS.map((link) => (
               <Pressable
-                key={link}
+                key={link.label}
+                onPress={() => Linking.openURL(link.url)}
                 style={({ pressed }) => ({
                   paddingHorizontal: 14, paddingVertical: 8, borderRadius: 8,
                   backgroundColor: pressed ? colors.cream : "transparent",
                 })}
               >
                 <Text style={{ fontFamily: "Inter_500Medium", fontSize: 14, color: colors.espresso }}>
-                  {link}
+                  {link.label}
                 </Text>
               </Pressable>
             ))}
@@ -72,6 +80,7 @@ export function NavBar() {
         <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end", alignItems: "center", gap: 8 }}>
           {isMd && (
             <Pressable
+              onPress={() => Linking.openURL(nutritionwizeLinks.insurance)}
               style={({ pressed }) => ({
                 paddingHorizontal: 16, paddingVertical: 9, borderRadius: 10,
                 borderWidth: 1, borderColor: colors.cream, opacity: pressed ? 0.7 : 1,
@@ -83,6 +92,7 @@ export function NavBar() {
             </Pressable>
           )}
           <Pressable
+            onPress={() => Linking.openURL(nutritionwizeLinks.consultation)}
             style={({ pressed }) => ({
               flexDirection: "row", alignItems: "center", gap: 6,
               paddingHorizontal: 18, paddingVertical: 10, borderRadius: 12,

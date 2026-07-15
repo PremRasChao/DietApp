@@ -49,35 +49,52 @@ export type ColorToken = keyof typeof colors;
 export type ThemeKey = keyof typeof theme;
 
 // ── App shell design system ("the kitchen scale") ───────────────────────────
-// Scoped to (auth) + (app) screens only — marketing keeps the forest/sage/clay
-// palette above. Dark ink chrome with paper-light cards, radial macro dial.
+// Aligned with the marketing palette above (forest / sage / clay on warm linen)
+// so the app and landing page read as one product. Light shell, white cards,
+// forest-green primary accent, radial macro dial.
 export const appColors = {
-  ink:          "#35617E",  // shell background — calming sky blue chrome
-  inkRaised:    "#1E425C",  // inner stat chips/cards — deeper, distinct blue so they read apart from the gradient
-  inkText:      "#16232C",  // guaranteed-dark text/icons on bright accent elements (fat buttons, badges)
-  paper:        "#F7F4EC",  // light cards
-  paperDim:     "#EDE8DA",  // dial track / subtle paper variant
-  text:         "#23211D",  // text on paper
-  textSoft:     "#6B6A5F",  // secondary text on paper
-  onInk:        "#F7F4EC",  // primary text on dark shell
-  onInkSoft:    "#C4D8E4",  // secondary text on dark shell
-  carb:         "#E8A33D",  // turmeric
-  protein:      "#C23B5E",  // beet
-  fat:          "#6B8F5C",  // kale — also primary/CTA accent
-  border:       "#D8D3C2",
+  ink:          "#EAE4D6",  // shell background — warm linen (matches marketing bg)
+  inkRaised:    "#FFFFFF",  // chips / pills / dial track — white surfaces that pop on linen
+  inkText:      "#FFFFFF",  // text & icons ON the forest accent (buttons, badges, avatar)
+  paper:        "#FFFFFF",  // cards — pure white, matching marketing surfaces
+  paperDim:     "#F1ECDF",  // subtle paper variant
+  text:         "#1C1917",  // primary text on cards (ink)
+  textSoft:     "#6B6560",  // secondary text on cards (stone)
+  onInk:        "#1C1917",  // primary text on the light shell (ink)
+  onInkSoft:    "#6B6560",  // secondary text on the light shell (stone)
+  carb:         "#5A8A78",  // sage
+  protein:      "#C44B3A",  // clay
+  fat:          "#2D4A3E",  // forest — the primary / CTA accent (also fat-macro swatch)
+  border:       "#D8D3C8",
   divider:      "#ECE7D9",
-  danger:       "#C23B5E",
+  danger:       "#C44B3A",  // clay
 } as const;
 
-// Shell background gradient — "calming sky blue," not a flat fill.
+// Shell background — subtle warm linen wash, not a flat fill.
 export const appGradient = {
-  shell: ["#4A85AB", "#254A63"] as const,
+  shell:  ["#F0EBDF", "#E4DDCC"] as const,
+  // Saturated forest accent — used where an element must pop off the light
+  // shell (e.g. the tab-bar "+" FAB) with white content on top.
+  accent: ["#3A5D4E", "#2D4A3E"] as const,
 } as const;
 
 export const appMacroColors = {
   protein: appColors.protein,
   carbs:   appColors.carb,
   fat:     appColors.fat,
+} as const;
+
+// Per-nutrient display tokens for the practitioner meal-plan builder.
+// Keeps the reference's three-step (pale tint bg / saturated fg / bar fill)
+// pattern, but recoloured into our forest / sage / clay earthy palette.
+// Fat/Carb/Protein reuse the macro-donut hues; Energy + Fiber are supporting
+// earth tones (they're not part of the donut).
+export const appNutrient = {
+  energy:  { fg: "#2D4A3E", bg: "#E7ECE9", bar: "#AFC4B9" }, // forest headline / soft bar
+  fat:     { fg: "#2D4A3E", bg: "#E4EAE7", bar: "#2D4A3E" }, // forest
+  carbs:   { fg: "#4C7A6A", bg: "#E8F0EC", bar: "#5A8A78" }, // sage
+  protein: { fg: "#C44B3A", bg: "#F7E6E2", bar: "#C44B3A" }, // clay
+  fiber:   { fg: "#6F8C46", bg: "#EEF2E3", bar: "#7A9B4E" }, // olive/leaf
 } as const;
 
 export const appFonts = {

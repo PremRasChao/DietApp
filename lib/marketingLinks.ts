@@ -1,0 +1,15 @@
+export const nutritionwizeLinks = {
+  home: "https://nutritionwize.com/",
+  about: "https://nutritionwize.com/about-us/",
+  services: "https://nutritionwize.com/services/",
+  consultation: "https://nutritionwize.com/rd-consultation-call-free/",
+  initialAssessment: "https://nutritionwize.com/initial-nutrition-assessment/",
+  followUp: "https://nutritionwize.com/follow-up-assessment/",
+  bcaAssessment: "https://nutritionwize.com/bca-test-report-assessment/",
+  educationPrograms: "https://nutritionwize.com/nutritionwize-education-programs/",
+  insurance: "https://nutritionwize.com/insurance/",
+  blog: "https://nutritionwize.com/blog/",
+  contact: "https://nutritionwize.com/contact-us/",
+  appointmentBooking: "https://patient.walnutemr.app/book?clinic=nutritionwizedietclinic",
+  phone: "tel:+19059701414",
+} as const;

@@ -1,13 +1,14 @@
 import { View } from "react-native";
+import { router } from "expo-router";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { Button } from "@/components/ui/Button";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 const FEATURES = [
-  { title: "AI dietitian chat", desc: "Get real-time meal advice between sessions." },
-  { title: "Personalised meal plans", desc: "Generated daily based on your goals and preferences." },
-  { title: "Food swap explorer", desc: "Find culturally relevant swaps for any ingredient." },
-  { title: "Progress tracking", desc: "Sync logs with your dietitian before every session." },
+  { title: "Personalized assessments", desc: "Start with your health history, goals, food preferences, and routine." },
+  { title: "Body composition insight", desc: "Use BCA testing and reports to build a plan around your baseline." },
+  { title: "Education programs", desc: "Learn practical strategies through Nutritionwize Education Programs." },
+  { title: "Multilingual support", desc: "Care is available in English, Punjabi, Hindi, Urdu, French, Spanish, and more." },
 ];
 
 export function AppFeatureSection() {
@@ -21,10 +22,10 @@ export function AppFeatureSection() {
         {/* Text side */}
         <View className={isMd ? "flex-1" : "mb-10"}>
           <ThemedText variant="heading" color="espresso">
-            Your nutrition coach, in your pocket
+            Practical nutrition support that fits your life
           </ThemedText>
           <ThemedText variant="body" color="taupe" className="mt-3 mb-6">
-            The Nutrition Wize app keeps you connected between sessions with tools that actually fit your life.
+            Nutritionwize combines one-on-one counselling, education, workshops, and progress tools to help you build sustainable habits.
           </ThemedText>
           {FEATURES.map((f) => (
             <View key={f.title} className="flex-row items-start gap-3 mb-4">
@@ -35,9 +36,21 @@ export function AppFeatureSection() {
               </View>
             </View>
           ))}
-          <View className="flex-row gap-3 mt-6">
+          <View className="flex-row flex-wrap gap-3 mt-6">
             <Button label="App Store" variant="dark" size="sm" />
             <Button label="Google Play" variant="secondary" size="sm" />
+            <Button
+              label="Client login"
+              variant="dark"
+              size="sm"
+              onPress={() => router.push("/(auth)/patient" as any)}
+            />
+            <Button
+              label="Dietitian login"
+              variant="secondary"
+              size="sm"
+              onPress={() => router.push("/(auth)/dietitian-login" as any)}
+            />
           </View>
         </View>
 

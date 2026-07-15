@@ -1,6 +1,13 @@
-import { Pressable, Text, StyleSheet, Alert } from "react-native";
+import { Pressable, Text, StyleSheet } from "react-native";
 import { supabase } from "@/lib/supabase/client";
 import { getPendingRole } from "@/lib/auth/pendingRole";
+
+// Alert.alert is a no-op on react-native-web, which silently hides OAuth
+// failures. Surface them where they can actually be seen.
+function showError(msg: string) {
+  console.error("[GoogleSignIn]", msg);
+  if (typeof window !== "undefined") window.alert(`Sign in failed: ${msg}`);
+}
 
 interface Props {
   onStart?: () => void;
@@ -19,17 +26,26 @@ export function GoogleSignInButton({ onStart, onFinish, disabled }: Props) {
       if (typeof sessionStorage !== "undefined") {
         sessionStorage.setItem("__pendingRole", getPendingRole());
       }
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           // Return to root so app/index.tsx can handle role assignment after OAuth
           redirectTo: typeof window !== "undefined" ? window.location.origin : undefined,
         },
       });
-      if (error) Alert.alert("Sign in failed", error.message);
+      if (error) {
+        showError(error.message);
+        onFinish?.();
+        return;
+      }
+      // On success the SDK returns the provider URL; if the browser hasn't
+      // navigated on its own, push it there explicitly.
+      if (data?.url && typeof window !== "undefined") {
+        window.location.href = data.url;
+      }
       // Browser navigates away; onSuccess / onFinish never fire after this
     } catch (e: any) {
-      Alert.alert("Sign in failed", e?.message ?? "Google sign-in error.");
+      showError(e?.message ?? "Google sign-in error.");
       onFinish?.();
     }
   }

@@ -3,10 +3,10 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 const COLUMNS = [
-  { heading: "Product",   links: ["How it works", "Pricing", "The app", "For clinics"] },
-  { heading: "Company",   links: ["About us", "Our dietitians", "Careers", "Press"] },
-  { heading: "Resources", links: ["Blog", "Insurance guide", "FAQ", "Contact"] },
-  { heading: "Legal",     links: ["Privacy (PIPEDA)", "Terms of use", "Accessibility"] },
+  { heading: "Quick Links", links: ["About Us", "Media", "Services", "Insurance"] },
+  { heading: "Services", links: ["RD Consultation Call - FREE", "Initial Nutrition Assessment", "Follow Up Assessment", "BCA Test + Report"] },
+  { heading: "Programs", links: ["Nutritionwize Education Programs", "Workshops", "Blog", "Contact Us"] },
+  { heading: "Locations", links: ["McVean", "Sandalwood", "Airport", "WMC Shoppers World"] },
 ];
 
 export function Footer() {
@@ -18,9 +18,12 @@ export function Footer() {
         {/* Top: logo + columns */}
         <View className={isMd ? "flex-row gap-12 mb-12" : "flex-col gap-8 mb-10"}>
           <View className={isMd ? "w-48" : "w-full"}>
-            <ThemedText variant="heading" color="espresso">Nutrition Wize</ThemedText>
+            <ThemedText variant="heading" color="espresso">Nutritionwize</ThemedText>
             <ThemedText variant="caption" color="taupe" className="mt-2">
-              Evidence-based nutrition care for the GTA and beyond.
+              Registered Dietitians and Certified Diabetes Educators helping individuals and families make informed, practical, and sustainable nutrition choices.
+            </ThemedText>
+            <ThemedText variant="caption" color="taupe" className="mt-3">
+              dietclinic@nutritionwize.com · (905) 970-1414
             </ThemedText>
           </View>
 
@@ -42,7 +45,7 @@ export function Footer() {
 
         <View className={isMd ? "flex-row items-center justify-between" : "flex-col gap-4"}>
           <ThemedText variant="caption" color="taupe">
-            © 2025 Nutrition Wize. All rights reserved.
+            © 2024 Nutritionwize. All rights reserved.
           </ThemedText>
           <View className="flex-row gap-3">
             {["Tw", "In", "Fb", "Ig"].map((s) => (

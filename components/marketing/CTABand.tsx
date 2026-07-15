@@ -1,13 +1,14 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Glow } from "@/components/ui/Glow";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { colors } from "@/lib/tokens";
+import { nutritionwizeLinks } from "@/lib/marketingLinks";
 
 const TRUST_ITEMS = [
-  { icon: "shield-checkmark-outline" as const, label: "Insurance-covered sessions" },
-  { icon: "people-outline"            as const, label: "450+ clients helped" },
-  { icon: "ribbon-outline"            as const, label: "100% registered RDs" },
+  { icon: "shield-checkmark-outline" as const, label: "Direct billing available" },
+  { icon: "people-outline"            as const, label: "20,000+ lives impacted" },
+  { icon: "ribbon-outline"            as const, label: "Registered Dietitians" },
 ];
 
 export function CTABand() {
@@ -53,7 +54,7 @@ export function CTABand() {
             marginBottom: 20,
           }}
         >
-          Ready to transform your{"\n"}relationship with food?
+          Book a consultation with{"\n"}our experts now
         </Text>
 
         <Text
@@ -67,12 +68,13 @@ export function CTABand() {
             marginBottom: 40,
           }}
         >
-          Join thousands of Canadians who've hit their health goals with personalised dietitian support — covered by most insurance plans.
+          Request a free consultation and start building a practical, sustainable plan with Nutritionwize's dietitian team.
         </Text>
 
         {/* CTAs */}
         <View style={{ flexDirection: "row", gap: 14, flexWrap: "wrap", justifyContent: "center", marginBottom: 48 }}>
           <Pressable
+            onPress={() => Linking.openURL(nutritionwizeLinks.consultation)}
             style={({ pressed }) => ({
               flexDirection: "row", alignItems: "center", gap: 8,
               paddingHorizontal: 28, paddingVertical: 16, borderRadius: 16,
@@ -88,6 +90,7 @@ export function CTABand() {
             <Ionicons name="arrow-forward" size={16} color={colors.espresso} />
           </Pressable>
           <Pressable
+            onPress={() => Linking.openURL(nutritionwizeLinks.phone)}
             style={({ pressed }) => ({
               flexDirection: "row", alignItems: "center", gap: 8,
               paddingHorizontal: 28, paddingVertical: 16, borderRadius: 16,
@@ -97,7 +100,7 @@ export function CTABand() {
           >
             <Ionicons name="phone-portrait-outline" size={16} color={colors.bone} />
             <Text style={{ fontFamily: "Inter_600SemiBold", fontSize: 16, color: colors.bone }}>
-              Download the app
+              Call (905) 970-1414
             </Text>
           </Pressable>
         </View>

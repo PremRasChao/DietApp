@@ -43,30 +43,30 @@ export const mockMeals = [
 export const mockDietitians = [
   {
     id: "1",
-    name: "[Dietitian name]",
-    specializations: ["Weight Management", "Diabetes Care"],
-    languages: ["English", "French"],
+    name: "Manmeet Behl",
+    specializations: ["Clinical Nutrition", "Diabetes Education"],
+    languages: ["English", "Punjabi", "Hindi"],
     photo: null as null | string,
   },
   {
     id: "2",
-    name: "[Dietitian name]",
-    specializations: ["Pediatric Nutrition", "Eating Disorders"],
-    languages: ["English", "Punjabi"],
+    name: "Nutritionwize RD Team",
+    specializations: ["Weight Management", "Gut Health"],
+    languages: ["English", "Urdu", "Gujarati"],
     photo: null as null | string,
   },
   {
     id: "3",
-    name: "[Dietitian name]",
-    specializations: ["Cultural Meal Planning", "Weight Management"],
-    languages: ["English", "Mandarin"],
+    name: "Certified Diabetes Educators",
+    specializations: ["Diabetes Care", "Heart Health"],
+    languages: ["English", "French", "Spanish"],
     photo: null as null | string,
   },
   {
     id: "4",
-    name: "[Dietitian name]",
-    specializations: ["Diabetes Care", "Sports Nutrition"],
-    languages: ["English", "Spanish"],
+    name: "NEP Program Dietitians",
+    specializations: ["Education Programs", "Family Nutrition"],
+    languages: ["English", "Arabic", "Portuguese"],
     photo: null as null | string,
   },
 ];
@@ -75,88 +75,102 @@ export const mockTestimonials = [
   {
     id: "1",
     quote:
-      "Working with my dietitian completely changed how I think about food. I've lost 18 lbs and have so much more energy.",
-    attribution: "[First name], [Neighborhood]",
+      "I was pleased with the service I received. They went the extra mile to explain healthy eating and physical activity, and the knowledge I gained will benefit me.",
+    attribution: "Alma Preddie",
   },
   {
     id: "2",
     quote:
-      "The cultural meal planning service was exactly what I needed. My dietitian understood my heritage and helped me eat healthier.",
-    attribution: "[First name], [Neighborhood]",
+      "My health has improved a lot. The diet plan and suggestions were extremely helpful, and I lost over 15 inches in just a month and a half.",
+    attribution: "Nisha Javiya",
   },
   {
     id: "3",
     quote:
-      "My son's eating disorder required expert guidance. Nutrition Wize gave us a compassionate, evidence-based plan.",
-    attribution: "[First name], [Neighborhood]",
+      "Manmeet listened carefully to my concerns and modified the diet plan around my schedule and comfort. I would recommend her to friends and family.",
+    attribution: "Deepika Sharma",
+  },
+  {
+    id: "4",
+    quote:
+      "The Nutritionwize dietitians gave practical, science-based tips that helped me shed more than 15 lbs in two months.",
+    attribution: "Amos Ikoroha",
   },
 ];
 
 export const mockBlogPosts = [
   {
     id: "1",
-    title: "5 High-Protein Breakfasts for Busy Mornings",
+    title: "Foods for Healthy Hair",
     excerpt:
-      "Start your day with energy that lasts. Our registered dietitians share their favourite quick-prep meals.",
-    date: "May 8, 2026",
-    category: "Meal Planning",
-    thumbnail: null as null | string,
+      "Nutrition tips for supporting shiny, healthy hair from the inside out.",
+    date: "Nutritionwize Blog",
+    category: "Wellness",
+    thumbnail: "https://nutritionwize.com/wp-content/uploads/2026/05/PIC-Healthy-Hair-2-768x512-1.jpg",
+    url: "https://nutritionwize.com/foods-for-healthy-hair/",
   },
   {
     id: "2",
-    title: "Understanding the Glycemic Index for Diabetes Management",
+    title: "Watching Your Waist Line at Dinner Parties",
     excerpt:
-      "Making sense of blood sugar impact can feel overwhelming — here's a plain-language guide from our team.",
-    date: "May 2, 2026",
-    category: "Diabetes Care",
-    thumbnail: null as null | string,
+      "Simple strategies for enjoying gatherings while staying mindful of your goals.",
+    date: "Nutritionwize Blog",
+    category: "Healthy Eating",
+    thumbnail: "https://nutritionwize.com/wp-content/uploads/2026/05/Untitled-design-37-1.png",
+    url: "https://nutritionwize.com/watching-your-waist-line-at-dinner-parties/",
   },
   {
     id: "3",
-    title: "How to Meal Prep for a Multi-Cultural Household",
+    title: "Healthy Eating During Holiday Season",
     excerpt:
-      "Balancing flavours, textures, and nutritional needs across cultural preferences is easier than you think.",
-    date: "April 25, 2026",
-    category: "Cultural Nutrition",
-    thumbnail: null as null | string,
+      "Practical ways to enjoy celebrations while making healthy food choices.",
+    date: "Nutritionwize Blog",
+    category: "Healthy Eating",
+    thumbnail: "https://nutritionwize.com/wp-content/uploads/2026/05/Untitled-design-38-1.png",
+    url: "https://nutritionwize.com/healthy-eating-during-holiday-season/",
   },
 ];
 
 export const mockServices = [
   {
     id: "weight",
-    title: "Weight Management",
+    title: "Initial Nutrition Assessment",
     description:
-      "Personalised, evidence-based plans that go beyond calorie counting to support lasting lifestyle change.",
+      "A personalized assessment with a Registered Dietitian to understand your health history, goals, routine, and food preferences.",
     icon: "⚖️",
+    url: "https://nutritionwize.com/initial-nutrition-assessment/",
   },
   {
     id: "diabetes",
     title: "Diabetes Care",
     description:
-      "Expert guidance for Type 1, Type 2, and pre-diabetes — including carb counting and blood sugar strategies.",
+      "Certified Diabetes Educators help with Type 1, Type 2, and pre-diabetes through practical blood sugar and meal planning strategies.",
     icon: "🩺",
+    url: "https://nutritionwize.com/services/",
   },
   {
     id: "pediatric",
-    title: "Pediatric Nutrition",
+    title: "Family & Children's Health",
     description:
-      "Age-appropriate nutrition support for children and teens, with family-centred meal planning.",
+      "Family-centred support for children, teens, parents, and busy households building healthier habits together.",
     icon: "🧒",
+    url: "https://nutritionwize.com/services/",
   },
   {
     id: "eating-disorder",
-    title: "Eating Disorder Support",
+    title: "BCA Test + Report Assessment",
     description:
-      "Compassionate, non-diet care for anorexia, bulimia, ARFID, and disordered eating patterns.",
+      "Body composition analysis with a report review to help your dietitian build a plan around your real baseline.",
     icon: "💙",
+    url: "https://nutritionwize.com/bca-test-report-assessment/",
   },
   {
     id: "cultural",
-    title: "Cultural Meal Planning",
+    title: "Nutritionwize Education Programs",
     description:
-      "Nutrition guidance that respects and celebrates your cultural food traditions across 20+ cuisines.",
+      "Signature NEP education sessions covering nutrition topics and health conditions for individuals, groups, and clinics.",
     icon: "🌍",
+    url: "https://nutritionwize.com/nutritionwize-education-programs/",
   },
 ];
 

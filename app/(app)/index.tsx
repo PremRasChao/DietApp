@@ -1,19 +1,20 @@
-import { ScrollView, View, Text } from "react-native";
+import { Linking, ScrollView, View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState, useCallback } from "react";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import {
   mockUser, mockAppointment, CALORIE_GOAL,
-  mockDietitian, mockDietitianStats, mockWorkHours, mockDietitianSchedule, mockDietitianClients,
+  mockDietitian, mockDietitianStats, mockDietitianSchedule, mockDietitianClients,
   type DietitianClient,
 } from "@/lib/mockData";
 import { getTodayLogs } from "@/lib/food/foodLog";
 import { appColors, appGradient } from "@/lib/tokens";
-import { useSession } from "@/lib/auth/useSession";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { MacroDial } from "@/components/app/MacroDial";
 import { AnimatedPressable } from "@/components/ui/AnimatedPressable";
+import { nutritionwizeLinks } from "@/lib/marketingLinks";
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -75,6 +76,7 @@ function PatientHome() {
         backgroundColor: appColors.paper, borderRadius: 16,
         paddingVertical: 13, paddingHorizontal: 14,
         flexDirection: "row", alignItems: "center", gap: 12,
+        marginBottom: 12,
       }}>
         <View style={{ alignItems: "center", minWidth: 38 }}>
           <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 10, color: "#8A8874", textTransform: "uppercase" }}>
@@ -94,6 +96,25 @@ function PatientHome() {
           </Text>
         </View>
         <Ionicons name="chevron-forward" size={16} color="#8A8874" />
+      </AnimatedPressable>
+
+      <AnimatedPressable
+        onPress={() => Linking.openURL(nutritionwizeLinks.appointmentBooking)}
+        style={{
+          backgroundColor: appColors.carb,
+          borderRadius: 16,
+          paddingVertical: 14,
+          paddingHorizontal: 16,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+        }}
+      >
+        <Ionicons name="calendar-outline" size={17} color={appColors.inkText} />
+        <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 14, color: appColors.inkText }}>
+          Book an appointment
+        </Text>
       </AnimatedPressable>
     </ScrollView>
   );
@@ -164,32 +185,30 @@ function DietitianHome() {
         <StatChip label="Plans due review" value={mockDietitianStats.plansDueReview} highlight />
       </View>
 
-      {/* Work hours */}
-      <View style={{
-        backgroundColor: appColors.inkRaised, borderRadius: 16, padding: 16, marginBottom: 20,
-        borderWidth: 1, borderColor: "rgba(255,255,255,0.08)",
-        flexDirection: "row", alignItems: "center", justifyContent: "space-between",
-      }}>
-        <View>
-          <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 10, color: appColors.onInkSoft, textTransform: "uppercase", letterSpacing: 0.5 }}>
-            Work hours today
+      {/* Meal plan builder entry */}
+      <AnimatedPressable
+        onPress={() => router.push("/templates" as any)}
+        style={{
+          backgroundColor: appColors.fat, borderRadius: 16, padding: 16, marginBottom: 20,
+          flexDirection: "row", alignItems: "center", gap: 14,
+        }}
+      >
+        <View style={{
+          width: 42, height: 42, borderRadius: 12,
+          backgroundColor: "rgba(255,255,255,0.16)", alignItems: "center", justifyContent: "center",
+        }}>
+          <Ionicons name="restaurant" size={20} color={appColors.inkText} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 15, color: appColors.inkText }}>
+            Meal plan templates
           </Text>
-          <Text style={{ fontFamily: "PublicSans_600SemiBold", fontSize: 15, color: appColors.onInk, marginTop: 3 }}>
-            {mockWorkHours.today.start} – {mockWorkHours.today.end}
+          <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 12, color: appColors.inkText, opacity: 0.8, marginTop: 1 }}>
+            Build & reuse weekly plans
           </Text>
         </View>
-        <View style={{ flexDirection: "row", gap: 6 }}>
-          {mockWorkHours.week.map((d) => (
-            <View key={d.day} style={{ alignItems: "center" }}>
-              <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 9, color: appColors.onInkSoft }}>{d.day[0]}</Text>
-              <View style={{
-                width: 5, height: 5, borderRadius: 2.5, marginTop: 3,
-                backgroundColor: d.hours === "Off" ? "#3A5570" : appColors.fat,
-              }} />
-            </View>
-          ))}
-        </View>
-      </View>
+        <Ionicons name="chevron-forward" size={18} color={appColors.inkText} />
+      </AnimatedPressable>
 
       <View style={{ flexDirection: isMd ? "row" : "column", gap: 16 }}>
         {/* Today's schedule */}
@@ -266,8 +285,8 @@ function DietitianHome() {
 
 // ────────────────────────────────────────────────────────────────────────────
 export default function AppHome() {
-  const { session } = useSession();
-  const isDietitian = session?.user?.user_metadata?.role === "dietitian";
+  const { role } = useAuth();
+  const isDietitian = role === "dietitian";
 
   return (
     <LinearGradient colors={appGradient.shell} style={{ flex: 1 }}>

@@ -88,10 +88,10 @@ export function DashboardPreview() {
             </Text>
           </View>
           <Text style={{ fontFamily: "Fraunces_700Bold", fontSize: isMd ? 42 : 32, color: colors.espresso, textAlign: "center" }}>
-            Your nutrition data, beautifully organised
+            Your plan, progress, and appointments in one place
           </Text>
           <Text style={{ fontFamily: "Inter_400Regular", fontSize: isMd ? 17 : 15, color: colors.taupe, lineHeight: 26, textAlign: "center", maxWidth: 520, marginTop: 14 }}>
-            Track meals, monitor progress, and stay connected with your dietitian — all in one clean dashboard.
+            Use your food log, body composition report, and session notes to stay connected with your Nutritionwize dietitian between visits.
           </Text>
         </View>
 
