@@ -46,6 +46,7 @@ export async function getTodayLogs(): Promise<FoodLogEntry[]> {
 }
 
 export async function deleteLog(id: string) {
-  const { error } = await supabase.from("food_logs").delete().eq("id", id);
+  const user_id = await getUserId();
+  const { error } = await supabase.from("food_logs").delete().eq("id", id).eq("user_id", user_id);
   if (error) throw error;
 }

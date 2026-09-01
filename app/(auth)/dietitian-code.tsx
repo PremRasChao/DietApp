@@ -33,8 +33,10 @@ export default function DietitianCodeScreen() {
       return;
     }
 
-    // Temporary demo access: bypass the RPC and drop into the dietitian shell.
-    if (trimmed.toLowerCase() === TEMP_DIETITIAN_ID.toLowerCase()) {
+    // Dev-only demo access: bypass the RPC and drop into the dietitian shell.
+    // __DEV__ is compiled to `false` in production/shipped builds, so this
+    // path — and the TEMP_DIETITIAN_ID string itself — never ships to users.
+    if (__DEV__ && trimmed.toLowerCase() === TEMP_DIETITIAN_ID.toLowerCase()) {
       startTempDietitian();
       router.replace("/(app)");
       return;

@@ -8,7 +8,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { MotiView } from "moti";
 import { appColors, appGradient } from "@/lib/tokens";
 import { AnimatedPressable } from "@/components/ui/AnimatedPressable";
-import { askAssistant, assistantConfigured, AssistantError, type ChatTurn } from "@/lib/ai/assistant";
+import { askAssistant, AssistantError, type ChatTurn } from "@/lib/ai/assistant";
+import { canSendMessage, recordMessage, remainingMessages } from "@/lib/ai/chatRateLimit";
 
 type Message = { id: string; role: "user" | "model"; text: string };
 
@@ -33,6 +34,14 @@ export default function ChatScreen() {
     const content = (text ?? input).trim();
     if (!content || sending) return;
 
+    if (!canSendMessage()) {
+      setMessages((prev) => [
+        ...prev,
+        { id: uid(), role: "model", text: `⚠️ You've hit the message limit (${remainingMessages()} left). Try again in a few minutes.` },
+      ]);
+      return;
+    }
+
     const userMsg: Message = { id: uid(), role: "user", text: content };
     const next = [...messages, userMsg];
     setMessages(next);
@@ -41,6 +50,7 @@ export default function ChatScreen() {
     scrollDown();
 
     try {
+      recordMessage();
       const history: ChatTurn[] = next.map((m) => ({ role: m.role, text: m.text }));
       const reply = await askAssistant(history);
       setMessages((prev) => [...prev, { id: uid(), role: "model", text: reply }]);
@@ -88,7 +98,7 @@ export default function ChatScreen() {
           contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 20, gap: 12, flexGrow: 1 }}
         >
           {empty ? (
-            <EmptyState onPick={send} configured={assistantConfigured} />
+            <EmptyState onPick={send} />
           ) : (
             messages.map((m) => <Bubble key={m.id} message={m} />)
           )}
@@ -191,7 +201,7 @@ function TypingBubble() {
   );
 }
 
-function EmptyState({ onPick, configured }: { onPick: (t: string) => void; configured: boolean }) {
+function EmptyState({ onPick }: { onPick: (t: string) => void }) {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap: 18, paddingBottom: 40 }}>
       <LinearGradient colors={appGradient.accent} style={{ width: 64, height: 64, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
@@ -200,25 +210,21 @@ function EmptyState({ onPick, configured }: { onPick: (t: string) => void; confi
       <View style={{ alignItems: "center", gap: 4 }}>
         <Text style={{ fontFamily: "Fraunces_600SemiBold", fontSize: 20, color: appColors.onInk }}>How can I help?</Text>
         <Text style={{ fontFamily: "PublicSans_400Regular", fontSize: 13, color: appColors.onInkSoft, textAlign: "center", maxWidth: 260 }}>
-          {configured
-            ? "Ask me anything about nutrition, meals, or your goals."
-            : "Add EXPO_PUBLIC_MISTRAL_API_KEY to your .env to start chatting."}
+          Ask me anything about nutrition, meals, or your goals.
         </Text>
       </View>
-      {configured && (
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, justifyContent: "center", paddingHorizontal: 12 }}>
-          {SUGGESTIONS.map((s) => (
-            <AnimatedPressable
-              key={s}
-              onPress={() => onPick(s)}
-              scaleTo={0.96}
-              style={{ backgroundColor: appColors.paper, borderWidth: 1, borderColor: appColors.border, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 9 }}
-            >
-              <Text style={{ fontFamily: "PublicSans_500Medium", fontSize: 13, color: appColors.text }}>{s}</Text>
-            </AnimatedPressable>
-          ))}
-        </View>
-      )}
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, justifyContent: "center", paddingHorizontal: 12 }}>
+        {SUGGESTIONS.map((s) => (
+          <AnimatedPressable
+            key={s}
+            onPress={() => onPick(s)}
+            scaleTo={0.96}
+            style={{ backgroundColor: appColors.paper, borderWidth: 1, borderColor: appColors.border, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 9 }}
+          >
+            <Text style={{ fontFamily: "PublicSans_500Medium", fontSize: 13, color: appColors.text }}>{s}</Text>
+          </AnimatedPressable>
+        ))}
+      </View>
     </View>
   );
 }

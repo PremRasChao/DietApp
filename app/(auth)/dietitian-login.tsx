@@ -5,7 +5,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSession } from "@/lib/auth/useSession";
-import { supabase } from "@/lib/supabase/client";
 import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 import { AppleSignInButton } from "@/components/auth/AppleSignInButton";
 import { appColors, appGradient } from "@/lib/tokens";
@@ -17,12 +16,9 @@ export default function DietitianLoginScreen() {
 
   if (!loading && session) return <Redirect href="/(app)" />;
 
-  async function handleSuccess() {
-    try {
-      await supabase.auth.updateUser({ data: { role: "dietitian" } });
-    } catch {
-      // Role update failed — non-blocking
-    }
+  function handleSuccess() {
+    // Role is assigned server-side (dietitian allowlist trigger on signup);
+    // it is never read from or written to client-supplied user metadata.
     router.replace("/(app)");
   }
 

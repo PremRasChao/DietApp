@@ -1,6 +1,5 @@
 import { canRequest, recordRequest } from "@/lib/rateLimit";
-
-const USDA_KEY = process.env.EXPO_PUBLIC_USDA_KEY ?? "DEMO_KEY";
+import { supabase } from "@/lib/supabase/client";
 
 const cache = new Map<string, FoodResult[]>();
 
@@ -38,16 +37,19 @@ export async function searchFood(query: string): Promise<FoodResult[]> {
   if (!canRequest("usda")) throw new Error("USDA daily request limit reached (500/day)");
   recordRequest("usda");
 
-  const url =
-    `https://api.nal.usda.gov/fdc/v1/foods/search` +
-    `?query=${encodeURIComponent(query)}` +
-    `&pageSize=25` +
-    `&dataType=Foundation,SR%20Legacy,Survey%20(FNDDS),Branded` +
-    `&api_key=${USDA_KEY}`;
-
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Food search failed");
-  const data = await res.json();
+  // Requests go through the food-proxy Supabase Edge Function, which holds
+  // the USDA key server-side — see supabase/functions/food-proxy.
+  const { data, error } = await supabase.functions.invoke("food-proxy", {
+    body: {
+      provider: "usda",
+      params: {
+        query,
+        pageSize: "25",
+        dataType: "Foundation,SR Legacy,Survey (FNDDS),Branded",
+      },
+    },
+  });
+  if (error) throw new Error("Food search failed");
 
   const results: FoodResult[] = (data.foods ?? [])
     .filter((f: any) => {

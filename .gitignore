@@ -30,3 +30,6 @@ ruvector.db
 .swarm/
 .claude-flow/
 .agents/
+
+# Supabase CLI local state
+supabase/.temp/

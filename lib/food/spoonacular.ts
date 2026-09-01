@@ -1,7 +1,15 @@
 import { canRequest, recordRequest } from "@/lib/rateLimit";
+import { supabase } from "@/lib/supabase/client";
 
-const BASE = "https://api.spoonacular.com";
-const KEY  = process.env.EXPO_PUBLIC_SPOONACULAR_KEY ?? "";
+// Requests go through the food-proxy Supabase Edge Function, which holds
+// the Spoonacular key server-side — see supabase/functions/food-proxy.
+async function spoonFetch(path: string, params: Record<string, string>): Promise<Response> {
+  const { data, error } = await supabase.functions.invoke("food-proxy", {
+    body: { provider: "spoonacular", path, params },
+  });
+  if (error) throw error;
+  return { ok: true, json: async () => data } as unknown as Response;
+}
 
 export type SpoonRecipe = {
   id: string;
@@ -34,20 +42,19 @@ function capitalize(s: string): string {
 
 // Search recipes with full nutrition data. Returns [] on rate limit or error.
 export async function searchRecipes(query: string, diet?: string): Promise<SpoonRecipe[]> {
-  if (!KEY || !canRequest("spoonacular")) return [];
+  if (!canRequest("spoonacular")) return [];
   recordRequest("spoonacular");
 
-  const p = new URLSearchParams({
+  const p: Record<string, string> = {
     query: query || "healthy",
     addRecipeNutrition: "true",
     addRecipeInformation: "true",
     number: "12",
-    apiKey: KEY,
     ...(diet ? { diet } : {}),
-  });
+  };
 
   try {
-    const res = await fetch(`${BASE}/recipes/complexSearch?${p}`);
+    const res = await spoonFetch("/recipes/complexSearch", p);
     if (!res.ok) return [];
     const data = await res.json();
 
@@ -93,11 +100,11 @@ export async function findEquivalents(
   carbs_g: number,
   fat_g: number
 ): Promise<SpoonRecipe[]> {
-  if (!KEY || !canRequest("spoonacular")) return [];
+  if (!canRequest("spoonacular")) return [];
   recordRequest("spoonacular");
 
   const tol = 0.3;
-  const p = new URLSearchParams({
+  const p: Record<string, string> = {
     minCalories: String(Math.round(kcal * (1 - tol))),
     maxCalories: String(Math.round(kcal * (1 + tol))),
     minProtein:  String(Math.round(protein_g * (1 - tol))),
@@ -105,11 +112,10 @@ export async function findEquivalents(
     minCarbs:    String(Math.round(carbs_g * (1 - tol))),
     maxCarbs:    String(Math.round(carbs_g * (1 + tol))),
     number: "3",
-    apiKey: KEY,
-  });
+  };
 
   try {
-    const res = await fetch(`${BASE}/recipes/findByNutrients?${p}`);
+    const res = await spoonFetch("/recipes/findByNutrients", p);
     if (!res.ok) return [];
     const data: Array<{
       id: number; title: string; calories: number;
@@ -140,11 +146,11 @@ export type RecipeDetails = {
 
 // Fetch full recipe details (ingredients + steps). Returns null on rate limit or error.
 export async function getRecipeDetails(id: string): Promise<RecipeDetails | null> {
-  if (!KEY || !canRequest("spoonacular")) return null;
+  if (!canRequest("spoonacular")) return null;
   recordRequest("spoonacular");
 
   try {
-    const res = await fetch(`${BASE}/recipes/${id}/information?apiKey=${KEY}`);
+    const res = await spoonFetch(`/recipes/${id}/information`, {});
     if (!res.ok) return null;
     const data = await res.json();
 
@@ -181,18 +187,17 @@ export async function generateMealPlan(
   targetCalories: number,
   diet: string
 ): Promise<GeneratedPlan | null> {
-  if (!KEY || !canRequest("spoonacular")) return null;
+  if (!canRequest("spoonacular")) return null;
   recordRequest("spoonacular");
 
   // Primary: dedicated meal-planner endpoint
   try {
-    const p = new URLSearchParams({
+    const p: Record<string, string> = {
       timeFrame: "day",
       targetCalories: String(targetCalories),
-      apiKey: KEY,
       ...(diet ? { diet } : {}),
-    });
-    const res = await fetch(`${BASE}/mealplanner/generate?${p}`);
+    };
+    const res = await spoonFetch("/mealplanner/generate", p);
     if (res.ok) {
       const data = await res.json();
       if (data.meals?.length) return data as GeneratedPlan;
@@ -205,17 +210,16 @@ export async function generateMealPlan(
 
   const perMeal = Math.round(targetCalories / 3);
   const tol = 0.45;
-  const sp = new URLSearchParams({
+  const sp: Record<string, string> = {
     addRecipeNutrition: "true",
     number: "3",
-    apiKey: KEY,
     minCalories: String(Math.round(perMeal * (1 - tol))),
     maxCalories: String(Math.round(perMeal * (1 + tol))),
     ...(diet ? { diet } : {}),
-  });
+  };
 
   try {
-    const res = await fetch(`${BASE}/recipes/complexSearch?${sp}`);
+    const res = await spoonFetch("/recipes/complexSearch", sp);
     if (!res.ok) return null;
     const data = await res.json();
     const results: any[] = data.results ?? [];
